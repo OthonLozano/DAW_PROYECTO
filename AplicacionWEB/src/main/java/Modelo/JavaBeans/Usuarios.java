@@ -1,4 +1,5 @@
-package JavaBeans;
+package Modelo.JavaBeans;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,7 +16,8 @@ public class Usuarios implements Serializable {
     private String Direccion;
     private String Ciudad;
     private Date Fecha_Registro;
-    private Date Ultimo_Accesso;
+    private String Usuario;
+    private String Estatus;
 
     public Usuarios() {
     }
@@ -100,11 +102,19 @@ public class Usuarios implements Serializable {
         Fecha_Registro = fecha_Registro;
     }
 
-    public Date getUltimo_Accesso() {
-        return Ultimo_Accesso;
+    public String getUsuario() {
+        return Usuario;
     }
 
-    public void setUltimo_Accesso(Date ultimo_Accesso) {
-        Ultimo_Accesso = ultimo_Accesso;
+    public void setUsuario(String usuario) {
+        Usuario = usuario;
+    }
+
+    public String getEstatus() {
+        return Estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        Estatus = estatus;
     }
 }
