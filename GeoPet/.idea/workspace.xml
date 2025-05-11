@@ -10,23 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Connection/Conexion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Avistamiento.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Avistamiento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Comentarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Comentarios.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Especie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Especie.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/ImagenMascota.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/ImagenMascota.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Mascotas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Mascotas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Raza.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Raza.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/ReporteDesaparicion.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/ReporteDesaparicion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/JavaBeans/Usuarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/../AplicacionWEB/src/main/java/Modelo/JavaBeans/Usuarios.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/MascotaServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/editar_especies.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/listar_especies.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/registrar_especies.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/EspecieDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/EspecieDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,6 +65,7 @@
     "Tomcat Server.Tomcat 10.1.39.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Especie",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -85,6 +78,14 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie" />
+      <recent name="$PROJECT_DIR$/src/main/java/Servlet" />
+      <recent name="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans" />
+      <recent name="$PROJECT_DIR$/src/main/java/Modelo/DAO" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Tomcat 10.1.39" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 10.1.39" ALTERNATIVE_JRE_ENABLED="false">
       <deployment>
@@ -141,7 +142,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1746903312167</updated>
-      <workItem from="1746903313070" duration="1004000" />
+      <workItem from="1746903313070" duration="9708000" />
     </task>
     <servers />
   </component>

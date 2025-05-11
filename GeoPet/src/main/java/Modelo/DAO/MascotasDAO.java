@@ -1,7 +1,7 @@
 package Modelo.DAO;
 
 import Connection.Conexion;
-import Model_JB.Mascotas;
+import Modelo.JavaBeans.Mascotas;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,8 +17,8 @@ public class MascotasDAO {
     ResultSet rs;
 
     public boolean RegistrarMascota(Mascotas m) {
-        String sql = "INSERT INTO mascotas (r_usuario, nombre, r_especie, edad, sexo, color, caracteristicasdistintivas, microchip, numero_microchip, estado, fecha_registro) " +
-                "VALUES (?, ?, ?, ?, ?::sexo_animal, ?, ?, ?, ?, ?::estado_mascota, ?)";
+        String sql = "INSERT INTO mascotas (r_usuario, nombre, r_especie, edad, sexo, color, caracteristicasdistintivas, microchip, numero_microchip, estado, fecha_registro, estatus) " +
+                "VALUES (?, ?, ?, ?, ?::sexo_animal, ?, ?, ?, ?, ?::estado_mascota, ?, 'Alta')";
         boolean exito = false;
         try {
             con = cn.getConnection();
@@ -91,7 +91,7 @@ public class MascotasDAO {
     }
 
     public boolean EliminarMascota(int id) {
-        String sql = "DELETE FROM mascotas WHERE mascotaid = ?";
+        String sql = "UPDATE mascotas SET Estatus = 'Baja' WHERE mascotaID = ?";
         boolean exito = false;
 
         try {
@@ -149,7 +149,7 @@ public class MascotasDAO {
         return exito;
     }
 
-    public Mascotas BuscarMascotaPorID(int id) {
+    public Mascotas BuscarMascota(int id) {
         Mascotas m = new Mascotas();
         String sql = "SELECT * FROM mascotas WHERE mascotaid = ?";
 

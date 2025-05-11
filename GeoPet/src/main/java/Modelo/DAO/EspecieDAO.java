@@ -19,8 +19,9 @@ public class EspecieDAO {
     public EspecieDAO() {
     }
 
+    //Crear
     public boolean RegistrarEspecie(Especie es) {
-        String sql = "INSERT INTO especie (nombre, descripcion) VALUES (?, ?)";
+        String sql = "INSERT INTO especie (nombre, descripcion, estatus) VALUES (?, ?, 'Alta')";
         boolean e = false;
 
         // Crear una nueva instancia de Conexion para cada operación
@@ -57,9 +58,10 @@ public class EspecieDAO {
         return e;
     }
 
+    //Listar
     public List ListarEspecies() {
         List<Especie> ListaEs = new ArrayList();
-        String sql = "SELECT * FROM especie";
+        String sql = "SELECT * FROM especie WHERE estatus ='Alta'";
 
         try {
             this.con = this.cn.getConnection();
@@ -88,31 +90,38 @@ public class EspecieDAO {
         return ListaEs;
     }
 
+    //Eliminar
     public boolean EliminarEspecie(int id) {
-        String sql = "DELETE FROM especie WHERE especieid = ?";
+        String sql = "UPDATE especie SET Estatus = 'Baja' WHERE especieid = ?";
         boolean ex = false;
 
         try {
-            // Abrir nueva conexión
             this.con = this.cn.getConnection();
             this.ps = this.con.prepareStatement(sql);
             this.ps.setInt(1, id);
-            this.ps.execute();
-            ex = true;
+
+            int rowsAffected = this.ps.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Especie marcada como 'Baja' correctamente.");
+                ex = true;
+            } else {
+                System.out.println("No se encontró la especie con el ID proporcionado.");
+                ex = false;
+            }
         } catch (SQLException e) {
-            System.out.println("Error al eliminar especie: " + e.toString());
+            System.out.println("Error al actualizar el estatus de la especie: " + e.toString());
             ex = false;
         } finally {
             try {
                 if (this.ps != null) this.ps.close();
                 if (this.con != null) this.con.close();
             } catch (SQLException e) {
-                System.out.println(e.toString());
+                System.out.println("Error al cerrar la conexión: " + e.toString());
             }
         }
-
         return ex;
     }
+
 
     public boolean ModificarEspecie(Especie es) {
         String sql = "UPDATE especie SET nombre = ?, descripcion = ? WHERE especieid = ?";
@@ -201,37 +210,5 @@ public class EspecieDAO {
 //
 //        return es;
 //    }
-//
-//    public List<Especie> BuscarEspeciesPorNombreParcial(String nombre) {
-//        List<Especie> ListaEs = new ArrayList<>();
-//        String sql = "SELECT * FROM especie WHERE nombre LIKE ?";
-//
-//        try {
-//            this.con = this.cn.getConnection();
-//            this.ps = this.con.prepareStatement(sql);
-//            this.ps.setString(1, "%" + nombre + "%");
-//            this.rs = this.ps.executeQuery();
-//
-//            while(this.rs.next()) {
-//                Especie es = new Especie();
-//                es.setEspecieID
-//                        (this.rs.getInt("especieid"));
-//                es.setNombre(this.rs.getString("nombre"));
-//                es.setDescripcion(this.rs.getString("descripcion"));
-//                ListaEs.add(es);
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("Error al buscar especies por nombre parcial: " + e.toString());
-//        } finally {
-//            try {
-//                if (this.rs != null) this.rs.close();
-//                if (this.ps != null) this.ps.close();
-//                if (this.con != null) this.con.close();
-//            } catch (SQLException e) {
-//                System.out.println(e.toString());
-//            }
-//        }
-//
-//        return ListaEs;
-//    }
+
 }
