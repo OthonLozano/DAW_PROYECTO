@@ -1,4 +1,4 @@
-package org.example.geopet.Servlet;
+package Servlet;
 
 import Modelo.DAO.EspecieDAO;
 import Modelo.JavaBeans.Especie;

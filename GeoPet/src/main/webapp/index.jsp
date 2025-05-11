@@ -72,6 +72,12 @@
             <li><a href="MascotaServlet?accion=listar">Listar Mascota</a></li>
         </ul>
     </section>
+
+    <section>
+        <h3>Seccion Usurios</h3>
+        <li><a href="login.jsp">Iniciar Sesion</a></li>
+        <li><a href="MascotaServlet?accion=listar">Listar Mascota</a></li>
+    </section>
 </div>
 </body>
 </html>

@@ -10,14 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/MascotaServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/editar_especies.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/listar_especies.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie/registrar_especies.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/Usuario.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/EspecieDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/EspecieDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/postgresql/Sin título.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,6 +30,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
@@ -65,13 +67,13 @@
     "Tomcat Server.Tomcat 10.1.39.executor": "Run",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Especie",
+    "last_opened_file_path": "/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Mascotas",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.lookFeel",
@@ -80,6 +82,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas" />
       <recent name="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Especie" />
       <recent name="$PROJECT_DIR$/src/main/java/Servlet" />
       <recent name="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans" />
@@ -103,6 +106,21 @@
       <predefined_log_file id="Tomcat Manager" />
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
         <option name="USE_ENV_VARIABLES" value="true" />
         <STARTUP>
@@ -142,7 +160,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1746903312167</updated>
-      <workItem from="1746903313070" duration="9708000" />
+      <workItem from="1746903313070" duration="15295000" />
     </task>
     <servers />
   </component>
