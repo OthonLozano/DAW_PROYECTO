@@ -7,53 +7,47 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
 
-@WebServlet("/ServletLogin")
+//String ctx = request.getContextPath();
+//response.sendRedirect(ctx + "/EspecieServlet?accion=listar");
+
+@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
+    private UsuariosDAO dao = new UsuariosDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String email = request.getParameter("email");
+        String pass  = request.getParameter("contrasenia");
+        String ctx   = request.getContextPath();
 
-        String identificador = request.getParameter("identificador"); // Puede ser nombre o email
-        String contrasenia = request.getParameter("contrasenia");
+        try {
+            Usuarios user = dao.login(email, pass);
+            if (user != null) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("usuario", user);
 
-        // Validación de los campos
-        if (identificador == null || identificador.trim().isEmpty() ||
-                contrasenia == null || contrasenia.trim().isEmpty()) {
-            request.setAttribute("error", "Debe ingresar su email/nombre y contraseña.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
-
-        // Verificar si ya hay una sesión activa
-        HttpSession existingSession = request.getSession(false);
-        if (existingSession != null && existingSession.getAttribute("usuario") != null) {
-            response.sendRedirect("menu.jsp");
-            return;
-        }
-
-        // Buscar usuario por nombre o email
-        UsuariosDAO dao = new UsuariosDAO();
-        List<Usuarios> usuarios = dao.buscarPorNombre(identificador);  // Usar 'Usuarios'
-        Usuarios usuario = usuarios.isEmpty() ? null : usuarios.get(0); // Usar 'Usuarios'
-
-        if (usuario == null) {
-            usuario = dao.buscarPorEmail(identificador);
-        }
-
-        // Verificar credenciales (sin encriptación)
-        if (usuario != null && contrasenia.equals(usuario.getContrasenia())) {
-            // Crear nueva sesión
-            HttpSession session = request.getSession(true);
-            session.setAttribute("usuario", usuario);
-            session.setMaxInactiveInterval(30 * 60); // La sesión expira después de 30 minutos
-
-            response.sendRedirect("index.jsp");
-        } else {
-            request.setAttribute("error", "Credenciales inválidas.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+                // Redirige según rol
+                switch (user.getUsuario()) {
+                    case "SuperAdmin":
+                        response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeSuperAdmin.jsp");
+                        break;
+                    case "Admin":
+                        response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeAdmin.jsp");
+                        break;
+                    case "Cliente":
+                        response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeCliente.jsp");
+                        break;
+                    default:
+                        response.sendRedirect(ctx + "/index.jsp?error=Rol+no+válido");
+                }
+            } else {
+                response.sendRedirect(ctx + "/index.jsp?error=Credenciales+incorrectas");
+            }
+        } catch (Exception e) {
+            throw new ServletException("Error en el login", e);
         }
     }
 }
+

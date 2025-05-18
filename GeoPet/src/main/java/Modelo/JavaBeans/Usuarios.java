@@ -17,7 +17,7 @@ public class Usuarios implements Serializable {
     private String Ciudad;
     private Date Fecha_Registro;
     private String Usuario;
-
+    private String Estatus;
 
     public Usuarios() {
     }
@@ -108,5 +108,13 @@ public class Usuarios implements Serializable {
 
     public void setUsuario(String usuario) {
         Usuario = usuario;
+    }
+
+    public String getEstatus() {
+        return Estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        Estatus = estatus;
     }
 }

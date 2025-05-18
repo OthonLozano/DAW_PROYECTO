@@ -1,16 +1,31 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: othon
-  Date: 17/05/25
-  Time: 23:05
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="Modelo.JavaBeans.Usuarios" %>
+<%@ page session="true" %>
+<%
+    Usuarios user = (Usuarios) session.getAttribute("usuario");
+    if (user == null || !"SuperAdmin".equals(user.getUsuario())) {
+        response.sendRedirect(request.getContextPath() + "/login.jsp?error=Acceso+no+autorizado");
+        return;
+    }
+%>
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>$Title$</title>
-  </head>
-  <body>
-  $END$
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Panel SuperAdmin</title>
+</head>
+<body>
+<h1>Bienvenido, SuperAdmin <%= user.getNombre() %>!</h1>
+<p>Desde aquí puedes:</p>
+<ul>
+    <li>Gestionar Administradores</li>
+    <li>Ver todos los usuarios</li>
+    <li>Ver reportes globales</li>
+    <li>Añadir SuperAdmin</li>
+    <!-- añade más enlaces de alto nivel -->
+</ul>
+
+<form action="${pageContext.request.contextPath}/LogoutServlet" method="post">
+    <button type="submit">Cerrar Sesión</button>
+</form>
+</body>
 </html>

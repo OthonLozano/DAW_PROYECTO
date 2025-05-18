@@ -10,15 +10,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/Usuario.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/AuthFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/RegistrarClienteServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeAdmin.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeCliente.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeSuperAdmin.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/RegistrarCliente.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/postgresql/Sin título.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/EspecieServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Usuarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Usuarios.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/Usuario.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,8 +36,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Jsp File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -51,35 +58,35 @@
       </MavenGeneralSettings>
     </option>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2wutVjyx4rTk9Vhr8wI5i4ML4r3" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Tomcat Server.Tomcat 10.1.39.executor": "Run",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Mascotas",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Tomcat Server.Tomcat 10.1.39.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Mascotas&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas" />
@@ -160,7 +167,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1746903312167</updated>
-      <workItem from="1746903313070" duration="15295000" />
+      <workItem from="1746903313070" duration="15547000" />
+      <workItem from="1747069882834" duration="2756000" />
+      <workItem from="1747118455598" duration="414000" />
+      <workItem from="1747531447137" duration="7535000" />
     </task>
     <servers />
   </component>
