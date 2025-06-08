@@ -2,7 +2,6 @@
 SELECT * FROM public.usuarios
 ORDER BY usuarioid ASC 
 
---En PostgreSQL sirve para instalar o habilitar la extensión pgcrypto si no está ya instalada en la base de datos actual.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
@@ -17,10 +16,10 @@ INSERT INTO Usuarios (
   Contrasenia, Telefono, Direccion, Ciudad,
   Fecha_Registro, Usuario, Estatus
 ) VALUES (
-  'Juan', 'Pérez', 'García', 'juan@correo.com',
-  crypt('MiPasswordSeguro123', gen_salt('bf', 12)),
+  'Isaias', 'DJ', 'Avi', 'IsaAvi@correo.com',
+  crypt('Isaias123', gen_salt('bf', 12)),
   '5551234567', 'Calle Falsa 123', 'Ciudad',
-  CURRENT_DATE, 'SuperAdmin', 'Activo'
+  CURRENT_DATE, 'SuperAdmin', 'Alta'
 );
 
 -- Insertar un Admin
@@ -29,10 +28,10 @@ INSERT INTO Usuarios (
   Contrasenia, Telefono, Direccion, Ciudad,
   Fecha_Registro, Usuario, Estatus
 ) VALUES (
-  'Juan', 'Pérez', 'García', 'juan@correo.com',
-  crypt('MiPasswordSeguro123', gen_salt('bf', 12)),
-  '5551234567', 'Calle Falsa 123', 'Ciudad',
-  CURRENT_DATE, 'Admin', 'Activo'
+  'Othon', 'Lozano', 'Vid', 'OthonVid@correo.com',
+  crypt('Othon123', gen_salt('bf', 12)),
+  '5551234567', 'Calle Jalapa 123', 'JalapaYork',
+  CURRENT_DATE, 'Admin', 'Alta'
 );
 
 -- Insertar un Cliente
@@ -41,8 +40,8 @@ INSERT INTO Usuarios (
   Contrasenia, Telefono, Direccion, Ciudad,
   Fecha_Registro, Usuario, Estatus
 ) VALUES (
-  'Juan', 'Pérez', 'García', 'juan@correo.com',
+  'Renata', 'Caro', 'Olmos', 'Renata@correo.com',
   crypt('MiPasswordSeguro123', gen_salt('bf', 12)),
-  '5551234567', 'Calle Falsa 123', 'Ciudad',
-  CURRENT_DATE, 'Cliente', 'Activo'
+  '5551234567', 'Calle Costa 123', 'Polvorin',
+  CURRENT_DATE, 'Cliente', 'Alta'
 );

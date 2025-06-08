@@ -1,45 +1,45 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Iniciar sesión</title>
-    <style>
-        body { font-family: Arial; background: #f4f4f4; height: 100vh; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-        input[type=text], input[type=password] { width: 100%; padding: 10px; margin-top: 10px; border-radius: 4px; border: 1px solid #ccc; }
-        input[type=submit] { margin-top: 15px; background: #3498db; color: white; padding: 10px; border: none; width: 100%; border-radius: 4px; cursor: pointer; }
-        input[type=submit]:hover { background: #2980b9; }
-        .error { color: red; margin-top: 10px; }
-    </style>
+<c:set var="pageTitle" value="Iniciar Sesión" />
+<%@ include file="/Vistas_JSP/Common/header.jsp" %>
 
-    <script>
-        function validateForm() {
-            var user = document.getElementById("identificador").value;
-            var pass = document.getElementById("contrasenia").value;
-
-            if (user == "" || pass == "") {
-                alert("Usuario y contraseña son requeridos.");
-                return false;
-            }
-            return true;
-        }
-    </script>
-</head>
-<body>
-<div class="login-box">
-    <h2>Iniciar Sesión</h2>
-
-    <form method="post" action="ServletLogin" onsubmit="return validateForm();">
-        <label for="identificador">Usuario o Email:</label>
-        <input type="text" id="identificador" name="identificador" required aria-label="Nombre de usuario o email">
-
-        <label for="contrasenia">Contraseña:</label>
-        <input type="password" id="contrasenia" name="contrasenia" required aria-label="Contraseña">
-
-        <input type="submit" value="Entrar">
-    </form>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h4><i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión</h4>
+                </div>
+                <div class="card-body">
+                    <form action="${pageContext.request.contextPath}/login" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <small>¿No tienes cuenta? <a href="${pageContext.request.contextPath}/Usuario.jsp">Regístrate</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+
+<%@ include file="/Vistas_JSP/Common/footer.jsp" %>
