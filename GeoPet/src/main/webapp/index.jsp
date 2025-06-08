@@ -1,14 +1,22 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="Vistas_JSP/Common/header.jsp"%>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeoPet - Inicio</title>
+
+    <!-- Bootstrap CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- GeoPet Custom CSS -->
+    <link href="${pageContext.request.contextPath}/Resources/CSS/custom.css" rel="stylesheet">
 </head>
 <body class="bg-geopet-light">
+<%@include file="Vistas_JSP/Common/header.jsp"%>
 <main class="main-container">
     <div class="container py-5">
         <!-- Hero Section -->
@@ -19,17 +27,47 @@
                         <i class="bi bi-geo-alt-fill me-2"></i>Bienvenido a GeoPet
                     </h1>
                     <p class="lead my-4">Sistema integral de gestión para el cuidado y seguimiento de mascotas. Mantén registro de tus mascotas, reporta avistamientos y conecta con otros amantes de los animales.</p>
-                    <div class="d-flex gap-3">
-                        <a href="#" class="btn btn-geopet-primary">
+
+                    <!-- Botones de acción principales -->
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/login.jsp" class="btn btn-geopet-primary btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/RegistrarCliente.jsp" class="btn btn-outline-geopet-primary btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>Registrarse
+                        </a>
+                    </div>
+
+                    <!-- Botones de funcionalidades (para usuarios ya logueados) -->
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#" class="btn btn-geopet-secondary" onclick="checkLogin('mascota')">
                             <i class="bi bi-plus-circle me-2"></i>Registrar Mascota
                         </a>
-                        <a href="#" class="btn btn-geopet-secondary">
+                        <a href="#" class="btn btn-geopet-secondary" onclick="checkLogin('avistamiento')">
                             <i class="bi bi-binoculars me-2"></i>Reportar Avistamiento
                         </a>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block">
-                    <img src="${pageContext.request.contextPath}/images/pet-hero.png" alt="Mascotas felices" class="img-fluid rounded-4 shadow">
+                    <img src="${pageContext.request.contextPath}/Resources/images/pet-hero.png" alt="Mascotas felices" class="img-fluid rounded-4 shadow">
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section (para usuarios no logueados) -->
+        <section class="cta-section mb-5">
+            <div class="card bg-geopet-primary text-white">
+                <div class="card-body text-center py-5">
+                    <h2 class="card-title mb-3">¿Listo para cuidar mejor a tu mascota?</h2>
+                    <p class="card-text lead mb-4">Únete a nuestra comunidad y mantén a tu mascota siempre segura</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/login.jsp" class="btn btn-light btn-lg">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </a>
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/RegistrarCliente.jsp" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-person-plus me-2"></i>Crear Cuenta
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -114,7 +152,30 @@
 
 <%@include file="Vistas_JSP/Common/footer.jsp"%>
 
-<!-- Bootstrap JS -->
+<!-- Bootstrap JS (CDN) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para verificar login -->
+<script>
+    function checkLogin(action) {
+        <%
+            String usuario = (String) session.getAttribute("usuario");
+            if (usuario != null) {
+        %>
+        if (action === 'mascota') {
+            window.location.href = '${pageContext.request.contextPath}/Vistas_JSP/Mascotas/ListarMascotas.jsp';
+        } else if (action === 'avistamiento') {
+            window.location.href = '${pageContext.request.contextPath}/Vistas_JSP/ReporteDesaparicion/ListarReportes.jsp';
+        }
+        <%
+            } else {
+        %>
+        alert('Debes iniciar sesión para acceder a esta funcionalidad');
+        window.location.href = '${pageContext.request.contextPath}/Vistas_JSP/Usuarios/login.jsp';
+        <%
+            }
+        %>
+    }
+</script>
 </body>
 </html>

@@ -12,7 +12,7 @@
   <!-- Bootstrap Icons (CDN) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <!-- GeoPet Custom CSS -->
-  <link href="${pageContext.request.contextPath}/CSS/custom.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/Resources/CSS/custom.css" rel="stylesheet">
 </head>
 <body>
 <!-- Header Navigation -->

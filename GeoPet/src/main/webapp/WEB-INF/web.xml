@@ -11,8 +11,7 @@
 
     <servlet-mapping>
         <servlet-name>default</servlet-name>
-        <url-pattern>/resources/*</url-pattern>
+        <url-pattern>/Resources/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Tus servlets existentes -->
 </web-app>
