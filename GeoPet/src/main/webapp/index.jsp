@@ -1,6 +1,7 @@
 <%@ page import="Modelo.JavaBeans.Usuarios" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ page session="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // Si ya hay un usuario en sesión, redirige a su dashboard
     Usuarios user = (Usuarios) session.getAttribute("usuario");
@@ -209,23 +210,22 @@
                     </h3>
                 </div>
                 <div class="login-body">
-                    <!-- Mostrar errores si existen -->
-                    <c:if test="${param.error != null}">
+                    <%
+                    String error = request.getParameter("error");
+                    if (error != null && !error.isEmpty()) {
+                    %>
                         <div class="alert alert-danger d-flex align-items-center" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div>${param.error}</div>
+                            <div><%= error %></div>
                         </div>
-                    </c:if>
+                    <% } %>
 
                     <form action="${pageContext.request.contextPath}/LoginServlet" method="post">
                         <div class="mb-3">
                             <label for="email" class="form-label">
                                 <i class="bi bi-envelope me-2"></i>Correo Electrónico
-                                <c:if test="${not empty error}">
-                                    <i class="bi bi-exclamation-triangle-fill text-danger ms-2"></i>
-                                </c:if>
                             </label>
-                            <input type="email" class="form-control ${not empty error ? 'is-invalid' : ''}"
+                            <input type="email" class="form-control"
                                    id="email" name="email" placeholder="correo@ejemplo.com" required>
                         </div>
 

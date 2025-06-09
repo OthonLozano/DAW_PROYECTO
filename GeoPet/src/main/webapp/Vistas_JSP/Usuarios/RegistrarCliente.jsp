@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -167,25 +168,31 @@
                             </button>
                         </form>
 
-                        <!-- Mensajes de error o éxito - Colocar justo después del formulario -->
-                        <c:choose>
-                            <c:when test="${not empty success}">
-                                <div class="alert alert-success d-flex align-items-center" role="alert">
-                                    <i class="bi bi-check-circle-fill me-2"></i>
-                                    <div>${success}</div>
-                                </div>
-                            </c:when>
-                            <c:when test="${not empty error}">
-                                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                    <div>${error}</div>
-                                </div>
-                            </c:when>
-                        </c:choose>
+                        <!-- Mensajes de error o éxito - Solo se muestran cuando hay un evento -->
+                        <%
+                        String success = request.getParameter("success");
+                        String error = request.getParameter("error");
+                        
+                        if (success != null && !success.isEmpty()) {
+                        %>
+                            <div class="alert alert-success d-flex align-items-center" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <div><%= success %></div>
+                            </div>
+                        <%
+                        } else if (error != null && !error.isEmpty()) {
+                        %>
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <div><%= error %></div>
+                            </div>
+                        <%
+                        }
+                        %>
 
                         <div class="text-center">
                             <p class="mb-0">¿Ya tienes una cuenta?</p>
-                            <a href="${pageContext.request.contextPath}/LoginServlet" class="btn btn-outline-success">
+                            <a href="${pageContext.request.contextPath}/index.jsp" class="btn btn-outline-success">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
                             </a>
                         </div>

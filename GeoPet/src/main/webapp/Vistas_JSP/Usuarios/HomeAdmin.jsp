@@ -1,4 +1,5 @@
 <%@ page import="Modelo.JavaBeans.Usuarios" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ page session="true" %>
 <%
     Usuarios user = (Usuarios) session.getAttribute("usuario");
@@ -89,6 +90,15 @@
             background-color: #f8a5c2;
             transform: scale(1.05);
         }
+
+        .feature-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .feature-link:hover {
+            color: inherit;
+        }
     </style>
 </head>
 <body>
@@ -114,11 +124,12 @@
     <div class="container py-5">
         <div class="welcome-section">
             <h1 class="display-4">Bienvenido al Panel de Administración</h1>
-            <p class="lead">Gestiona las especies, razas y reportes de desaparición de mascotas</p>
+            <p class="lead">Gestiona las especies, razas, usuarios y reportes del sistema</p>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-4">
+            <!-- Gestión de Especies -->
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100 p-4 text-center">
                     <div class="card-body">
                         <i class="fas fa-dog card-icon"></i>
@@ -130,28 +141,43 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
+            <!-- Gestión de Usuarios -->
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100 p-4 text-center">
                     <div class="card-body">
-                        <i class="fas fa-paw card-icon"></i>
-                        <h3 class="card-title">Razas</h3>
-                        <p class="card-text">Administra las razas disponibles para cada especie</p>
-                        <a href="${pageContext.request.contextPath}/RazaServlet?accion=listar" class="btn btn-primary">
-                            <i class="fas fa-cog me-2"></i>Gestionar Razas
+                        <i class="fas fa-users card-icon"></i>
+                        <h3 class="card-title">Usuarios</h3>
+                        <p class="card-text">Visualiza y gestiona todos los usuarios del sistema</p>
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/ver_usuarios.jsp" class="btn btn-primary">
+                            <i class="fas fa-user-cog me-2"></i>Gestionar Usuarios
                         </a>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-4">
+
+            <!-- Reportes -->
+            <div class="col-md-6 col-lg-3">
                 <div class="card h-100 p-4 text-center">
                     <div class="card-body">
-                        <i class="fas fa-search card-icon"></i>
+                        <i class="fas fa-chart-line card-icon"></i>
                         <h3 class="card-title">Reportes</h3>
-                        <p class="card-text">Visualiza y gestiona los reportes de mascotas desaparecidas</p>
-                        <a href="#" class="btn btn-primary">
+                        <p class="card-text">Accede a estadísticas y reportes del sistema</p>
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Reportes/reportes_globales.jsp" class="btn btn-primary">
                             <i class="fas fa-chart-bar me-2"></i>Ver Reportes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Administradores -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 p-4 text-center">
+                    <div class="card-body">
+                        <i class="fas fa-user-shield card-icon"></i>
+                        <h3 class="card-title">Administradores</h3>
+                        <p class="card-text">Administra los usuarios con rol de administrador</p>
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/gestionar_administradores.jsp" class="btn btn-primary">
+                            <i class="fas fa-user-lock me-2"></i>Gestionar Admins
                         </a>
                     </div>
                 </div>

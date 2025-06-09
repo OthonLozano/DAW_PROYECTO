@@ -1,179 +1,178 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="Modelo.JavaBeans.Especie" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Mascota</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoPet - Registrar Especie</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-color: #a8d8ea;
+            --secondary-color: #aa96da;
+            --accent-color: #fcbad3;
+            --background-color: #f8f9fa;
+            --text-color: #2c3e50;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background-color: black;
-            color: #333;
-            padding: 40px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .contenedor {
-            max-width: 700px;
-            margin: auto;
-            background-color: #f8f4a7;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
-        h2 {
-            text-align: center;
-            color: #0f75b6;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-
-        input, select {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #aaa;
-        }
-
-        input[type="submit"] {
-            margin-top: 20px;
-            background-color: #0f75b6;
-            color: white;
+        .card {
             border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: white;
+            margin-bottom: 2rem;
         }
 
-        input[type="submit"]:hover {
-            background-color: #0c5a8c;
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.5rem;
+            border: none;
         }
 
-        .links {
-            text-align: center;
-            margin-top: 20px;
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 600;
         }
 
-        .links a {
-            color: #0f75b6;
-            text-decoration: none;
-            margin: 0 10px;
+        .card-body {
+            padding: 2rem;
         }
 
-        .links a:hover {
-            text-decoration: underline;
-            text-decoration-color: black;
+        .form-floating {
+            margin-bottom: 1.5rem;
         }
 
-        .mensaje {
+        .form-floating > .form-control {
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            padding: 1rem 0.75rem;
+            height: calc(3.5rem + 2px);
+            line-height: 1.25;
+        }
+
+        .form-floating > .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(170, 150, 218, 0.25);
+        }
+
+        .form-floating > label {
+            padding: 1rem 0.75rem;
+            color: var(--text-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(252, 186, 211, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(170, 150, 218, 0.3);
+            color: white;
+        }
+
+        .alert {
+            border-radius: 8px;
+            border: none;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
             background-color: #d4edda;
             color: #155724;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
         }
 
-        .info-usuario {
-            background-color: #e7f3ff;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #0f75b6;
-            font-weight: bold;
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
 <body>
-<div class="contenedor">
-    <h2>Registrar Mascota</h2>
 
-    <!-- Mostrar mensaje de éxito si existe -->
-    <% if (request.getAttribute("mensaje") != null) { %>
-    <div class="mensaje">
-        <%= request.getAttribute("mensaje") %>
-    </div>
-    <% } %>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-dog me-2"></i>Registrar Nueva Especie</h2>
+        </div>
+        <div class="card-body">
+            <%
+                String mensaje = (String) request.getAttribute("mensaje");
+                if (mensaje != null) {
+                    String tipo = (String) request.getAttribute("tipo");
+                    String alertClass = tipo.equals("success") ? "alert-success" : "alert-danger";
+            %>
+                <div class="alert <%= alertClass %>" role="alert">
+                    <%= mensaje %>
+                </div>
+            <% } %>
 
-    <!-- Mostrar información del usuario logueado (opcional) -->
-    <%
-        // Obtener el ID del usuario directamente de la sesión o del atributo
-        Integer usuarioId = (Integer) request.getAttribute("usuarioId");
-        if (usuarioId == null) {
-            usuarioId = (Integer) session.getAttribute("usuarioId");
-        }
-        if (usuarioId != null) {
-    %>
-    <div class="info-usuario">
-        Registrando mascota para el usuario ID: <%= usuarioId %>
-    </div>
-    <% } %>
+            <form action="EspecieServlet" method="post">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la especie" required>
+                    <label for="nombre"><i class="fas fa-tag me-2"></i>Nombre de la especie</label>
+                </div>
 
-    <form action="MascotaServlet" method="post">
-        <input type="hidden" name="accion" value="registrar" />
+                <div class="form-floating mb-4">
+                    <textarea class="form-control" id="descripcion" name="descripcion" placeholder="Descripción" style="height: 100px" required></textarea>
+                    <label for="descripcion"><i class="fas fa-align-left me-2"></i>Descripción</label>
+                </div>
 
-        <!-- Campo oculto para el ID del usuario - toma el valor de la sesión -->
-        <input type="hidden" name="r_usuario" value="<%= usuarioId != null ? usuarioId : session.getAttribute("usuarioId") %>" />
-
-        <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" required />
-
-        <label for="r_especie">Especie ID:</label>
-        <input type="number" name="r_especie" required />
-
-        <label for="edad">Edad:</label>
-        <input type="number" name="edad" required />
-
-        <label for="sexo">Sexo:</label>
-        <select name="sexo" required>
-            <option value="">Seleccionar...</option>
-            <option value="macho">Macho</option>
-            <option value="hembra">Hembra</option>
-        </select>
-
-        <label for="color">Color:</label>
-        <input type="text" name="color" required />
-
-        <label for="caracteristicasdistintivas">Características Distintivas:</label>
-        <input type="text" name="caracteristicasdistintivas" />
-
-        <label for="microchip">¿Tiene microchip?</label>
-        <select name="microchip" required>
-            <option value="">Seleccionar...</option>
-            <option value="true">Sí</option>
-            <option value="false">No</option>
-        </select>
-
-        <label for="numero_microchip">Número de Microchip (opcional):</label>
-        <input type="number" name="numero_microchip" />
-
-        <label for="estado">Estado:</label>
-        <select name="estado" required>
-            <option value="">Seleccionar...</option>
-            <option value="Perdida">Perdida</option>
-            <option value="En casa">En casa</option>
-        </select>
-
-        <label for="fecha_registro">Fecha de Registro:</label>
-        <input type="date" name="fecha_registro" required />
-
-        <input type="submit" value="Registrar" />
-    </form>
-
-    <div class="links">
-        <a href="MascotaServlet?accion=listar">Volver a la lista</a>
-        <a href="index.jsp">Menú Principal</a>
+                <div class="d-flex justify-content-between">
+                    <a href="EspecieServlet?accion=listar" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Volver a la Lista
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Guardar Especie
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
