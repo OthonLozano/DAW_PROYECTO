@@ -10,23 +10,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/AuthFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Servlet/RegistrarClienteServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeAdmin.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeCliente.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeSuperAdmin.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/RegistrarCliente.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Usuarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Usuarios.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LogoutServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/Usuario.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/postgresql/CreacionTablas.sql" beforeDir="false" afterPath="$PROJECT_DIR$/postgresql/CreacionTablas.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/registrar_mascotas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/registrar_mascotas.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,13 +68,13 @@
     &quot;Tomcat Server.Tomcat 10.1.39.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/othon/Desktop/DAW/DAW_PROYECTO/GeoPet/src/main/webapp/Vistas_JSP/Mascotas&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/othon/Desktop/DAW/ProyectoFinal/DAW_PROYECTO/GeoPet&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
@@ -171,6 +165,8 @@
       <workItem from="1747069882834" duration="2756000" />
       <workItem from="1747118455598" duration="414000" />
       <workItem from="1747531447137" duration="7535000" />
+      <workItem from="1749502065273" duration="2551000" />
+      <workItem from="1749505050773" duration="992000" />
     </task>
     <servers />
   </component>

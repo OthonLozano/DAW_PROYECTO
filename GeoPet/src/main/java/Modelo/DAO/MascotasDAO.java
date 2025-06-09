@@ -348,4 +348,116 @@ public class MascotasDAO {
 
         return lista;
     }
+
+    // AGREGAR este método temporal a tu MascotasDAO para debug:
+    public List<Mascotas> ListarMascotasPorUsuarioDebug(int usuarioId) {
+        List<Mascotas> lista = new ArrayList<>();
+
+        // Consulta sin filtro de estatus para ver todo
+        String sql = "SELECT * FROM mascotas WHERE r_usuario = ?";
+
+        System.out.println("DEBUG DAO: Ejecutando consulta sin filtro de estatus para usuario ID: " + usuarioId);
+        System.out.println("DEBUG DAO: SQL = " + sql);
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, usuarioId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Mascotas m = new Mascotas();
+                m.setMascotaID(rs.getInt("mascotaid"));
+                m.setR_Usuario(rs.getInt("r_usuario"));
+                m.setNombre(rs.getString("nombre"));
+                m.setR_Especie(rs.getInt("r_especie"));
+                m.setEdad(rs.getInt("edad"));
+                m.setSexo(rs.getString("sexo"));
+                m.setColor(rs.getString("color"));
+                m.setCaracteristicasDistintivas(rs.getString("caracteristicasdistintivas"));
+                m.setMicrochip(rs.getBoolean("microchip"));
+                m.setNumero_Microchip(rs.getInt("numero_microchip"));
+                m.setEstado(rs.getString("estado"));
+                m.setFecha_Registro(rs.getDate("fecha_registro"));
+                lista.add(m);
+
+                System.out.println("DEBUG DAO: Mascota encontrada - ID: " + m.getMascotaID() +
+                        ", Nombre: " + m.getNombre() +
+                        ", Usuario: " + m.getR_Usuario() +
+                        ", Estatus en BD: " + rs.getString("estatus"));
+            }
+
+            System.out.println("DEBUG DAO: Total mascotas del usuario " + usuarioId + " (sin filtro): " + lista.size());
+
+        } catch (SQLException e) {
+            System.out.println("ERROR DAO: Exception en ListarMascotasPorUsuarioDebug - " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
+
+        return lista;
+    }
+
+    public List<Mascotas> ListarMascotasSinReporteActivo(int usuarioId) {
+        List<Mascotas> lista = new ArrayList<>();
+
+        String sql = "SELECT m.* FROM mascotas m " +
+                "WHERE m.r_usuario = ? AND m.estatus = 'Alta' " +
+                "AND m.mascotaid NOT IN (" +
+                "    SELECT r.r_mascota FROM reportedesaparicion r " +
+                "    WHERE r.estatus = 'Alta' AND r.estadoreporte != 'Activo'" +
+                ") " +
+                "ORDER BY m.nombre";
+
+        System.out.println("DEBUG MascotasDAO: Buscando mascotas sin reporte activo para usuario " + usuarioId);
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, usuarioId);
+            rs = ps.executeQuery();
+
+            int contador = 0;
+            while (rs.next()) {
+                contador++;
+                Mascotas mascota = new Mascotas();
+                mascota.setMascotaID(rs.getInt("mascotaid"));
+                mascota.setNombre(rs.getString("nombre"));
+                mascota.setEdad(rs.getInt("edad"));
+                mascota.setSexo(rs.getString("sexo"));
+                mascota.setColor(rs.getString("color"));
+                mascota.setCaracteristicasDistintivas(rs.getString("caracteristicasdistintivas"));
+                mascota.setR_Usuario(rs.getInt("r_usuario"));
+                mascota.setR_Especie(rs.getInt("r_especie"));
+                mascota.setEstado(rs.getString("estado"));
+
+                lista.add(mascota);
+                System.out.println("DEBUG MascotasDAO: Mascota disponible - ID: " +
+                        mascota.getMascotaID() + ", Nombre: " + mascota.getNombre());
+            }
+
+            System.out.println("DEBUG MascotasDAO: Total mascotas sin reporte activo = " + contador);
+
+        } catch (SQLException e) {
+            System.out.println("ERROR MascotasDAO: Exception en ListarMascotasSinReporteActivo - " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                System.out.println("ERROR MascotasDAO: Exception al cerrar conexiones - " + e.getMessage());
+            }
+        }
+
+        return lista;
+    }
 }

@@ -1,4 +1,4 @@
-CREATE TYPE tipo_usuario AS ENUM ('SuperAdmin','Admin', 'Cliente');
+CREATE TYPE tipo_usuario AS ENUM ('Admin', 'Cliente');
 CREATE TYPE tipo_estatus AS ENUM ('Alta','Baja');
 CREATE TABLE Usuarios(
 	UsuarioID serial primary key,
@@ -14,19 +14,12 @@ CREATE TABLE Usuarios(
 	Usuario tipo_usuario,
 	Estatus tipo_estatus
 	);
+	
 CREATE TABLE Especie(
 	EspecieID serial primary key,
 	Nombre varchar(20),
 	Descripcion text,
 	Estatus tipo_estatus);
-
-CREATE TABLE Raza(
-	RazaID serial primary key,
-	Nombre varchar(20),
-	Descripcion text,
-	R_Especie int,
-	Estatus tipo_estatus,
-	FOREIGN KEY (R_Especie) REFERENCES Especie(EspecieID) );
 
 CREATE TYPE sexo_animal AS ENUM ('Macho', 'Hembra');
 CREATE TYPE estado_mascota AS ENUM ('Perdida', 'Encontrada', 'En casa');
@@ -56,15 +49,15 @@ CREATE TABLE ImagenMascota (
 	Estatus tipo_estatus,
 	foreign key (R_Mascota) references Mascotas(MascotaID) );
 
-CREATE TYPE reporte AS ENUM ('Activo', 'Cerrado', 'Cancelado');
+CREATE TYPE reporte AS ENUM ('Activo', 'Cerrado');
 
 CREATE TABLE ReporteDesaparicion(
 	ReporteID serial primary key,
 	R_Usuario int,
 	R_Mascota int,
 	FechaDesaparicion date,
-	UbicacionUltimaVez varchar(64),
-	DescripcionSituacion varchar(64),
+	UbicacionUltimaVez text,
+	DescripcionSituacion text,
 	Recompensa float,
 	EstadoReporte reporte,
 	Fecha_Registro date,
@@ -77,7 +70,7 @@ CREATE TABLE Avistamiento (
 	R_Reporte int,
 	R_UsuarioReportante int,
 	Fecha_Avistamiento date,
-	Ubicacion varchar(64),
+	Ubicacion text,
 	Descripcion text,
 	Contacto varchar(64),
 	Fecha_Registro date,

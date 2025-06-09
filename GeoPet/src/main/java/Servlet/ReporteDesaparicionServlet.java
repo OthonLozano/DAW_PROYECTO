@@ -13,6 +13,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @WebServlet(name = "ReporteDesaparicionServlet", urlPatterns = {"/ReporteDesaparicionServlet"})
@@ -63,85 +65,80 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                     request.setAttribute("mensaje", "Error: " + error);
                 }
 
-                // Obtener todos los reportes activos para mostrar públicamente
-                List<ReporteConRelaciones> listaReportes = reporteDAO.listarReportesCompletos();
+                // Obtener reportes EXTERNOS (excluyendo los del usuario actual)
+                List<ReporteConRelaciones> listaReportes;
+
+                if (usuarioId != null) {
+                    // Usuario logueado: mostrar solo reportes de OTROS usuarios
+                    System.out.println("DEBUG: Usuario logueado - mostrando reportes externos (excluyendo usuario " + usuarioId + ")");
+                    listaReportes = reporteDAO.listarReportesExternos(usuarioId);
+                } else {
+                    // Usuario NO logueado: mostrar todos los reportes
+                    System.out.println("DEBUG: Usuario no logueado - mostrando todos los reportes");
+                    listaReportes = reporteDAO.listarReportesCompletos();
+                }
+
                 System.out.println("DEBUG: Total reportes obtenidos = " + (listaReportes != null ? listaReportes.size() : "NULL"));
 
                 request.setAttribute("reportesCompletos", listaReportes);
-                request.getRequestDispatcher("Vistas_JSP/Reportes/listar_reportes.jsp").forward(request, response);
-                break;
-
-            case "mis_reportes":
-                System.out.println("DEBUG: Caso mis_reportes");
-
-                // Verificar que hay un usuario logueado
-                if (usuarioId == null) {
-                    System.out.println("ERROR: No hay usuario logueado");
-                    request.setAttribute("mensaje", "Error: Debe iniciar sesión para ver sus reportes.");
-                    request.getRequestDispatcher("index.jsp").forward(request, response);
-                    return;
-                }
-
-                // Obtener reportes del usuario actual
-                List<ReporteConRelaciones> misReportes = reporteDAO.listarReportesPorUsuario(usuarioId);
-                System.out.println("DEBUG: Reportes del usuario " + usuarioId + " = " + (misReportes != null ? misReportes.size() : "NULL"));
-
-                request.setAttribute("misReportes", misReportes);
-                request.getRequestDispatcher("Vistas_JSP/Reportes/mis_reportes.jsp").forward(request, response);
+                request.setAttribute("usuarioLogueado", usuarioId != null); // Para el JSP
+                request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp").forward(request, response);
                 break;
 
             case "registrar":
-                System.out.println("DEBUG: Caso registrar reporte");
+                System.out.println("=== DEBUG: Caso registrar reporte ===");
 
                 // Verificar que hay un usuario logueado
                 if (usuarioId == null) {
-                    System.out.println("ERROR: No hay usuario logueado");
+                    System.out.println("ERROR: No hay usuario logueado - usuarioId es NULL");
                     request.setAttribute("mensaje", "Error: Debe iniciar sesión para registrar un reporte.");
                     request.getRequestDispatcher("index.jsp").forward(request, response);
                     return;
                 }
 
-                // Obtener las mascotas del usuario para el combobox
-                List<Mascotas> mascotasUsuario = mascotaDAO.ListarMascotasPorUsuario(usuarioId);
-                System.out.println("DEBUG: Mascotas del usuario para reporte = " + (mascotasUsuario != null ? mascotasUsuario.size() : "NULL"));
+                System.out.println("DEBUG: Usuario logueado ID = " + usuarioId);
+
+                // Obtener mascotas del usuario que NO tienen reportes activos
+                List<Mascotas> mascotasDisponibles = mascotaDAO.ListarMascotasSinReporteActivo(usuarioId);
+                System.out.println("DEBUG: Mascotas disponibles para reportar = " +
+                        (mascotasDisponibles != null ? mascotasDisponibles.size() : "NULL"));
+
+                if (mascotasDisponibles == null || mascotasDisponibles.isEmpty()) {
+                    // Verificar si el usuario tiene mascotas pero todas tienen reportes activos
+                    List<Mascotas> todasLasMascotas = mascotaDAO.ListarMascotasPorUsuario(usuarioId);
+
+                    if (todasLasMascotas != null && !todasLasMascotas.isEmpty()) {
+                        System.out.println("DEBUG: El usuario tiene mascotas pero todas están reportadas");
+                        request.setAttribute("mensaje",
+                                "Todas sus mascotas ya tienen reportes activos. " +
+                                        "Para crear un nuevo reporte, primero debe marcar alguna mascota como 'En casa' " +
+                                        "desde 'Mis Reportes'.");
+                    } else {
+                        System.out.println("DEBUG: El usuario no tiene mascotas registradas");
+                        request.setAttribute("mensaje", "No tienes mascotas registradas.");
+                    }
+                }
 
                 request.setAttribute("usuarioId", usuarioId);
-                request.setAttribute("mascotasUsuario", mascotasUsuario);
-                request.getRequestDispatcher("Vistas_JSP/Reportes/registrar_reporte.jsp").forward(request, response);
+                request.setAttribute("mascotasUsuario", mascotasDisponibles);
+                request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp").forward(request, response);
                 break;
 
             case "editar":
-                System.out.println("DEBUG: Caso editar reporte");
+                System.out.println("=== DEBUG: Caso editar reporte ===");
 
-                try {
-                    int reporteId = Integer.parseInt(request.getParameter("id"));
-                    System.out.println("DEBUG: ID de reporte a editar = " + reporteId);
+                String reporteIdStr = request.getParameter("id");
+                int reporteId = Integer.parseInt(reporteIdStr);
+                System.out.println("DEBUG: Editando reporte ID = " + reporteId);
 
-                    ReporteDesaparicion reporte = reporteDAO.buscarReporte(reporteId);
-                    if (reporte == null || reporte.getReporteID() == 0) {
-                        System.out.println("ERROR: Reporte no encontrado");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=reporte_no_encontrado");
-                        return;
-                    }
+                // Buscar el reporte
+                ReporteDesaparicion reporteAEditar = reporteDAO.buscarReporte(reporteId);
 
-                    // Verificar que el usuario actual es el propietario del reporte
-                    if (usuarioId != null && !usuarioId.equals(reporte.getR_Usuario())) {
-                        System.out.println("ERROR: Usuario no autorizado para editar este reporte");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=no_autorizado");
-                        return;
-                    }
+                System.out.println("DEBUG: Reporte encontrado - redirigiendo al formulario");
 
-                    // Obtener las mascotas del usuario para el combobox
-                    List<Mascotas> mascotasUsuario2 = mascotaDAO.ListarMascotasPorUsuario(usuarioId);
-
-                    request.setAttribute("reporte", reporte);
-                    request.setAttribute("mascotasUsuario", mascotasUsuario2);
-                    request.getRequestDispatcher("Vistas_JSP/Reportes/editar_reporte.jsp").forward(request, response);
-
-                } catch (NumberFormatException e) {
-                    System.out.println("ERROR: ID de reporte inválido");
-                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=id_invalido");
-                }
+                // Pasar el reporte al JSP de edición
+                request.setAttribute("reporte", reporteAEditar);
+                request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp").forward(request, response);
                 break;
 
             case "eliminar":
@@ -196,6 +193,100 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                 }
                 break;
 
+            case "marcar_encontrada":
+                System.out.println("DEBUG: Caso marcar_encontrada");
+
+                try {
+                    int reporteIdMarca = Integer.parseInt(request.getParameter("id"));
+                    System.out.println("DEBUG: ID de reporte a marcar como encontrada = " + reporteIdMarca);
+
+                    // Verificar que el reporte existe
+                    ReporteDesaparicion reporteAActualizar = reporteDAO.buscarReporte(reporteIdMarca);
+                    if (reporteAActualizar == null || reporteAActualizar.getReporteID() == 0) {
+                        System.out.println("ERROR: Reporte no encontrado");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=reporte_no_encontrado");
+                        return;
+                    }
+
+                    // Verificar que el usuario actual es el propietario del reporte
+                    if (usuarioId != null && !usuarioId.equals(reporteAActualizar.getR_Usuario())) {
+                        System.out.println("ERROR: Usuario no autorizado para modificar este reporte");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=no_autorizado");
+                        return;
+                    }
+
+                    // Verificar que el reporte no esté ya marcado como "En casa"
+                    if ("En casa".equals(reporteAActualizar.getEstadoReporte())) {
+                        System.out.println("DEBUG: El reporte ya está marcado como 'En casa'");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&mensaje=ya_en_casa");
+                        return;
+                    }
+
+                    // Actualizar el estado del reporte a "En casa"
+                    reporteAActualizar.setEstadoReporte("Cerrado");
+
+                    boolean actualizacionExitosa = reporteDAO.modificarReporte(reporteAActualizar);
+
+                    if (actualizacionExitosa) {
+                        System.out.println("DEBUG: Reporte marcado como 'En casa' exitosamente");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&mensaje=marcada_en_casa");
+                    } else {
+                        System.out.println("ERROR: Fallo al marcar el reporte como 'En casa'");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=actualizar_fallo");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.println("ERROR: ID de reporte inválido");
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=id_invalido");
+                } catch (Exception e) {
+                    System.out.println("ERROR: Exception general en marcar_encontrada - " + e.getMessage());
+                    e.printStackTrace();
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=general");
+                }
+                break;
+
+            case "mis_reportes":
+                System.out.println("DEBUG: Caso mis_reportes");
+
+                // Verificar que hay un usuario logueado
+                if (usuarioId == null) {
+                    System.out.println("ERROR: No hay usuario logueado");
+                    request.setAttribute("mensaje", "Error: Debe iniciar sesión para ver sus reportes.");
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                    return;
+                }
+
+                // Verificar mensajes adicionales
+                String mensaje1 = request.getParameter("mensaje");
+                if (mensaje1 != null) {
+                    System.out.println("DEBUG: Mensaje recibido = " + mensaje1);
+                    switch (mensaje1) {
+                        case "eliminado":
+                            request.setAttribute("mensaje", "¡Reporte eliminado exitosamente!");
+                            break;
+                        case "actualizado":
+                            request.setAttribute("mensaje", "¡Reporte actualizado exitosamente!");
+                            break;
+                        case "registrado":
+                            request.setAttribute("mensaje", "¡Reporte registrado exitosamente!");
+                            break;
+                        case "marcada_en_casa":
+                            request.setAttribute("mensaje", "¡Mascota marcada como 'En casa' exitosamente! Ahora puede crear nuevos reportes para esta mascota si es necesario.");
+                            break;
+                        case "ya_en_casa":
+                            request.setAttribute("mensaje", "Esta mascota ya está marcada como 'En casa'.");
+                            break;
+                    }
+                }
+
+                // Obtener reportes del usuario actual
+                List<ReporteConRelaciones> misReportes = reporteDAO.listarReportesPorUsuario(usuarioId);
+                System.out.println("DEBUG: Reportes del usuario " + usuarioId + " = " + (misReportes != null ? misReportes.size() : "NULL"));
+
+                request.setAttribute("misReportes", misReportes);
+                request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp").forward(request, response);
+                break;
+
             default:
                 System.out.println("DEBUG: Caso default");
                 response.sendRedirect("ReporteDesaparicionServlet?accion=listar");
@@ -225,9 +316,41 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                         return;
                     }
 
+                    int mascotaId = Integer.parseInt(request.getParameter("mascota_id"));
+                    System.out.println("DEBUG: Mascota ID a reportar = " + mascotaId);
+
+                    // VALIDACIÓN: Verificar que la mascota no tenga ya un reporte activo
+                    if (reporteDAO.existeReporteActivoPorMascota(mascotaId)) {
+                        System.out.println("ERROR: La mascota ya tiene un reporte activo");
+
+                        // Obtener información del reporte existente
+                        ReporteDesaparicion reporteExistente = reporteDAO.obtenerReporteActivoPorMascota(mascotaId);
+
+                        // Volver al formulario con error
+                        List<Mascotas> mascotasDisponibles = mascotaDAO.ListarMascotasSinReporteActivo(usuarioId);
+                        request.setAttribute("usuarioId", usuarioId);
+                        request.setAttribute("mascotasUsuario", mascotasDisponibles);
+                        request.setAttribute("mensaje",
+                                "Error: Esta mascota ya tiene un reporte activo desde el " +
+                                        new SimpleDateFormat("dd/MM/yyyy").format(reporteExistente.getFecha_Registro()) +
+                                        ". Para crear un nuevo reporte, primero debe marcar la mascota como 'En casa' " +
+                                        "desde 'Mis Reportes'.");
+                        request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp").forward(request, response);
+                        return;
+                    }
+
+                    // VALIDACIÓN: Verificar que la mascota pertenece al usuario logueado
+                    Mascotas mascotaAReportar = mascotaDAO.BuscarMascota(mascotaId);
+                    if (mascotaAReportar == null || mascotaAReportar.getR_Usuario() != usuarioId.intValue()) {
+                        System.out.println("ERROR: La mascota no pertenece al usuario o no existe");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=registrar&error=mascota_no_autorizada");
+                        return;
+                    }
+
+                    // Continuar con el registro normal del reporte
                     ReporteDesaparicion nuevoReporte = new ReporteDesaparicion();
                     nuevoReporte.setR_Usuario(usuarioId);
-                    nuevoReporte.setR_Mascota(Integer.parseInt(request.getParameter("mascota_id")));
+                    nuevoReporte.setR_Mascota(mascotaId);
                     nuevoReporte.setFechaDesaparicion(java.sql.Date.valueOf(request.getParameter("fecha_desaparicion")));
                     nuevoReporte.setUbicacionUltimaVez(request.getParameter("ubicacion_ultima_vez"));
                     nuevoReporte.setDescripcionSituacion(request.getParameter("descripcion_situacion"));
@@ -240,7 +363,7 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                         nuevoReporte.setRecompensa(0.0);
                     }
 
-                    nuevoReporte.setEstadoReporte(request.getParameter("estado_reporte"));
+                    nuevoReporte.setEstadoReporte("Activo"); // Establecer estado inicial
                     nuevoReporte.setFecha_Registro(new java.sql.Date(System.currentTimeMillis()));
                     nuevoReporte.setEstatus("Alta");
 
@@ -256,11 +379,11 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                     } else {
                         System.out.println("ERROR: Fallo al registrar el reporte");
                         // Volver al formulario con error
-                        List<Mascotas> mascotasUsuario = mascotaDAO.ListarMascotasPorUsuario(usuarioId);
+                        List<Mascotas> mascotasDisponibles = mascotaDAO.ListarMascotasSinReporteActivo(usuarioId);
                         request.setAttribute("usuarioId", usuarioId);
-                        request.setAttribute("mascotasUsuario", mascotasUsuario);
+                        request.setAttribute("mascotasUsuario", mascotasDisponibles);
                         request.setAttribute("mensaje", "Error al registrar el reporte. Inténtelo nuevamente.");
-                        request.getRequestDispatcher("Vistas_JSP/Reportes/registrar_reporte.jsp").forward(request, response);
+                        request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp").forward(request, response);
                     }
 
                 } catch (Exception e) {
@@ -271,54 +394,60 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                 break;
 
             case "actualizar":
-                System.out.println("DEBUG: Actualizando reporte");
+                System.out.println("=== DEBUG: Caso actualizar reporte ===");
 
                 try {
-                    int reporteId = Integer.parseInt(request.getParameter("reporte_id"));
-                    System.out.println("DEBUG: ID de reporte a actualizar = " + reporteId);
+                    // Obtener datos del formulario
+                    int reporteIdAct = Integer.parseInt(request.getParameter("reporteid"));
+                    int mascotaIdAct = Integer.parseInt(request.getParameter("r_mascota"));
+                    String fechaDesaparicionStr = request.getParameter("fecha_desaparicion");
+                    String ubicacionUltimaVez = request.getParameter("ubicacionultimavez");
+                    String descripcionSituacion = request.getParameter("descripcionsituacion");
+                    double recompensa = Double.parseDouble(request.getParameter("recompensa"));
+
+                    System.out.println("DEBUG: Actualizando reporte ID = " + reporteIdAct);
+                    System.out.println("DEBUG: Datos recibidos - Mascota: " + mascotaIdAct + ", Ubicación: " + ubicacionUltimaVez);
 
                     // Verificar que el reporte existe y pertenece al usuario
-                    ReporteDesaparicion reporteExistente = reporteDAO.buscarReporte(reporteId);
-                    if (reporteExistente == null || !usuarioId.equals(reporteExistente.getR_Usuario())) {
-                        System.out.println("ERROR: Reporte no encontrado o no autorizado");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=no_autorizado");
+                    ReporteDesaparicion reporteExistente = reporteDAO.buscarReporte(reporteIdAct);
+                    if (reporteExistente == null || reporteExistente.getR_Usuario() != usuarioId) {
+                        System.out.println("ERROR: Reporte no encontrado o sin permisos");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=sin_permisos");
                         return;
                     }
 
-                    // Actualizar los datos
-                    reporteExistente.setR_Mascota(Integer.parseInt(request.getParameter("mascota_id")));
-                    reporteExistente.setFechaDesaparicion(java.sql.Date.valueOf(request.getParameter("fecha_desaparicion")));
-                    reporteExistente.setUbicacionUltimaVez(request.getParameter("ubicacion_ultima_vez"));
-                    reporteExistente.setDescripcionSituacion(request.getParameter("descripcion_situacion"));
+                    // Crear objeto con los datos actualizados
+                    ReporteDesaparicion reporteActualizado = new ReporteDesaparicion();
+                    reporteActualizado.setReporteID(reporteIdAct);
+                    reporteActualizado.setR_Mascota(mascotaIdAct);
+                    reporteActualizado.setR_Usuario(usuarioId); // Mantener el usuario original
 
-                    String recompensaStr = request.getParameter("recompensa");
-                    if (recompensaStr != null && !recompensaStr.trim().isEmpty()) {
-                        reporteExistente.setRecompensa(Double.parseDouble(recompensaStr));
-                    } else {
-                        reporteExistente.setRecompensa(0.0);
-                    }
+                    // Convertir fecha
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    reporteActualizado.setFechaDesaparicion(sdf.parse(fechaDesaparicionStr));
 
-                    reporteExistente.setEstadoReporte(request.getParameter("estado_reporte"));
+                    reporteActualizado.setUbicacionUltimaVez(ubicacionUltimaVez);
+                    reporteActualizado.setDescripcionSituacion(descripcionSituacion);
+                    reporteActualizado.setRecompensa(recompensa);
+                    reporteActualizado.setEstadoReporte("Perdido"); // Mantener como perdido
+                    reporteActualizado.setFecha_Registro(reporteExistente.getFecha_Registro()); // Mantener fecha original
+                    reporteActualizado.setEstatus("Alta");
 
-                    boolean actualizacionExitosa = reporteDAO.modificarReporte(reporteExistente);
+                    // Actualizar en la base de datos
+                    boolean exito = reporteDAO.modificarReporte(reporteActualizado);
 
-                    if (actualizacionExitosa) {
+                    if (exito) {
                         System.out.println("DEBUG: Reporte actualizado exitosamente");
                         response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&mensaje=actualizado");
                     } else {
-                        System.out.println("ERROR: Fallo al actualizar el reporte");
-                        // Volver al formulario con error
-                        List<Mascotas> mascotasUsuario = mascotaDAO.ListarMascotasPorUsuario(usuarioId);
-                        request.setAttribute("reporte", reporteExistente);
-                        request.setAttribute("mascotasUsuario", mascotasUsuario);
-                        request.setAttribute("mensaje", "Error al actualizar el reporte. Inténtelo nuevamente.");
-                        request.getRequestDispatcher("Vistas_JSP/Reportes/editar_reporte.jsp").forward(request, response);
+                        System.out.println("ERROR: Fallo al actualizar reporte");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=editar&id=" + reporteIdAct + "&error=fallo_actualizacion");
                     }
 
                 } catch (Exception e) {
                     System.out.println("ERROR: Exception en actualizar reporte - " + e.getMessage());
                     e.printStackTrace();
-                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=general");
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=error_inesperado");
                 }
                 break;
 

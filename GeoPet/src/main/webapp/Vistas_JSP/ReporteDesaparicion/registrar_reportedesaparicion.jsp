@@ -1,6 +1,15 @@
+<%
+    HttpSession debugSession = request.getSession(false);
+    Integer debugUsuarioId = (Integer) (debugSession != null ? debugSession.getAttribute("usuarioId") : null);
+    out.println("<!-- DEBUG: Usuario ID en sesión = " + debugUsuarioId + " -->");
+
+    List<Mascotas> debugMascotas = (List<Mascotas>) request.getAttribute("mascotasUsuario");
+    out.println("<!-- DEBUG: Mascotas recibidas = " + (debugMascotas != null ? debugMascotas.size() : "NULL") + " -->");
+%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="java.util.List" %>
 <%@ page import="Modelo.JavaBeans.Mascotas" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -257,8 +266,9 @@
                     <label for="estado_reporte">Estado del Reporte</label>
                     <select name="estado_reporte" id="estado_reporte" class="form-control" required>
                         <option value="">Selecciona el estado...</option>
-                        <option value="Perdido">Perdido</option>
-                        <option value="Encontrado">Encontrado</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Cerrado">Cerrado</option>
+                        <option value="Cancelado">Cancelado</option>
                     </select>
                 </div>
             </div>

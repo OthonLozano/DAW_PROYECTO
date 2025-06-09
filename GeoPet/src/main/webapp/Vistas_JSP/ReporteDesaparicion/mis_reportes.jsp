@@ -12,7 +12,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mascotas Perdidas - GeoPet</title>
+  <title>Mis Reportes - GeoPet</title>
   <style>
     * {
       margin: 0;
@@ -34,11 +34,11 @@
     .header {
       text-align: center;
       margin-bottom: 30px;
-      background: linear-gradient(135deg, #dc3545, #c82333);
+      background: linear-gradient(135deg, #007bff, #0056b3);
       padding: 40px 20px;
       border-radius: 15px;
       color: white;
-      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
     }
 
     .header h1 {
@@ -73,6 +73,9 @@
       border-radius: 8px;
       font-weight: bold;
       transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .btn-primary {
@@ -93,6 +96,15 @@
       background-color: #c82333;
     }
 
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+    }
+
     .btn-secondary {
       background-color: #6c757d;
       color: white;
@@ -100,6 +112,12 @@
 
     .btn-secondary:hover {
       background-color: #545b62;
+    }
+
+    .btn-small {
+      padding: 8px 16px;
+      margin: 0 5px;
+      font-size: 12px;
     }
 
     .mensaje {
@@ -124,7 +142,7 @@
 
     .reportes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
       gap: 25px;
       margin-bottom: 30px;
     }
@@ -135,7 +153,14 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .reporte-card.perdido {
       border-left: 5px solid #dc3545;
+    }
+
+    .reporte-card.en-casa {
+      border-left: 5px solid #28a745;
     }
 
     .reporte-card:hover {
@@ -171,18 +196,26 @@
       font-size: 64px;
     }
 
-    .perdido-badge {
+    .estado-badge {
       position: absolute;
       top: 15px;
       right: 15px;
-      background-color: #dc3545;
-      color: white;
       padding: 8px 16px;
       border-radius: 25px;
       font-size: 12px;
       font-weight: bold;
       text-transform: uppercase;
+    }
+
+    .badge-perdido {
+      background-color: #dc3545;
+      color: white;
       animation: pulse 2s infinite;
+    }
+
+    .badge-en-casa {
+      background-color: #28a745;
+      color: white;
     }
 
     @keyframes pulse {
@@ -294,43 +327,21 @@
       font-size: 16px;
     }
 
-    .contacto {
+    .acciones-reporte {
       border-top: 1px solid #eee;
       padding-top: 15px;
-      background-color: #f8f9fa;
-      margin: -25px -25px 0 -25px;
-      padding: 15px 25px;
-    }
-
-    .contacto-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .contacto-datos {
-      font-size: 14px;
-    }
-
-    .contacto-nombre {
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 4px;
-    }
-
-    .contacto-telefono {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .contacto-telefono:hover {
-      text-decoration: underline;
+      margin-top: 15px;
+      text-align: center;
     }
 
     .fecha-reporte {
       font-size: 12px;
       color: #666;
-      text-align: right;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
     }
 
     .empty-state {
@@ -361,32 +372,19 @@
         gap: 20px;
       }
 
-      .contacto-info {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .fecha-reporte {
-        text-align: left;
-        margin-top: 10px;
+      .btn-small {
+        display: block;
+        margin: 5px 0;
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
 <div class="container">
-  <%
-    Boolean usuarioLogueado = (Boolean) request.getAttribute("usuarioLogueado");
-    boolean esUsuarioLogueado = usuarioLogueado != null && usuarioLogueado;
-  %>
-
   <div class="header">
-    <h1>🚨 Mascotas Perdidas</h1>
-    <% if (esUsuarioLogueado) { %>
-    <p>Mascotas perdidas reportadas por otros usuarios - Ayúdalos a encontrar a sus compañeros</p>
-    <% } else { %>
-    <p>Ayuda a reunir familias con sus mascotas perdidas</p>
-    <% } %>
+    <h1>📋 Mis Reportes</h1>
+    <p>Gestiona los reportes de tus mascotas perdidas</p>
   </div>
 
   <!-- Mostrar mensajes -->
@@ -401,50 +399,55 @@
 
   <!-- Estadísticas -->
   <%
-    List<ReporteConRelaciones> reportes = (List<ReporteConRelaciones>) request.getAttribute("reportesCompletos");
-    int totalReportes = reportes != null ? reportes.size() : 0;
-    int reportesActivos = 0;
-    if (reportes != null) {
-      for (ReporteConRelaciones reporte : reportes) {
-        if (reporte.esReporteActivo()) {
-          reportesActivos++;
+    List<ReporteConRelaciones> misReportes = (List<ReporteConRelaciones>) request.getAttribute("misReportes");
+    int totalMisReportes = misReportes != null ? misReportes.size() : 0;
+    int misReportesActivos = 0;
+    int reportesEnCasa = 0;
+    if (misReportes != null) {
+      for (ReporteConRelaciones reporte : misReportes) {
+        if ("Perdido".equals(reporte.getReporte().getEstadoReporte())) {
+          misReportesActivos++;
+        } else if ("En casa".equals(reporte.getReporte().getEstadoReporte())) {
+          reportesEnCasa++;
         }
       }
     }
   %>
   <div class="stats">
-    <h3>📊 Estadísticas de Reportes</h3>
-    <% if (esUsuarioLogueado) { %>
-    <p><strong><%= totalReportes %></strong> mascotas perdidas de otros usuarios necesitan tu ayuda</p>
-    <% } else { %>
-    <p><strong><%= totalReportes %></strong> reportes totales | <strong><%= reportesActivos %></strong> mascotas aún perdidas</p>
-    <% } %>
+    <h3>📊 Mis Estadísticas</h3>
+    <p><strong><%= totalMisReportes %></strong> reportes totales |
+      <strong><%= misReportesActivos %></strong> mascotas perdidas |
+      <strong><%= reportesEnCasa %></strong> mascotas en casa</p>
   </div>
 
   <!-- Acciones principales -->
   <div class="acciones-principales">
-    <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=registrar" class="btn btn-danger">
-      🚨 Reportar Mascota Perdida
+    <a href="ReporteDesaparicionServlet?accion=registrar" class="btn btn-danger">
+      🚨 Reportar Nueva Mascota Perdida
     </a>
-    <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=mis_reportes" class="btn btn-primary">
-      📋 Mis Reportes
+    <a href="ReporteDesaparicionServlet?accion=listar" class="btn btn-secondary">
+      👀 Ver Todas las Mascotas Perdidas
     </a>
     <a href="/GeoPet_war_exploded/Vistas_JSP/Usuarios/HomeCliente.jsp" class="btn btn-secondary">
       🏠 Ir al Inicio
     </a>
   </div>
 
-  <!-- Grid de reportes -->
-  <% if (reportes != null && !reportes.isEmpty()) { %>
+  <!-- Grid de mis reportes -->
+  <% if (misReportes != null && !misReportes.isEmpty()) { %>
   <div class="reportes-grid">
     <%
       SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-      for (ReporteConRelaciones reporteRel : reportes) {
+      for (ReporteConRelaciones reporteRel : misReportes) {
         ReporteDesaparicion reporte = reporteRel.getReporte();
         Mascotas mascota = reporteRel.getMascota();
         Usuarios usuario = reporteRel.getUsuario();
         Especie especie = reporteRel.getEspecie();
         ImagenMascota imagen = reporteRel.getImagen();
+
+        // Determinar el estado del reporte
+        boolean estaPerdido = "Activo".equals(reporte.getEstadoReporte());
+        boolean estaEnCasa = "Cerrado".equals(reporte.getEstadoReporte());
 
         // Determinar el ícono del sexo
         String sexoIcon = "";
@@ -457,7 +460,7 @@
           sexoClass = "sexo-hembra";
         }
     %>
-    <div class="reporte-card">
+    <div class="reporte-card <%= estaPerdido ? "perdido" : estaEnCasa ? "en-casa" : "" %>">
       <div class="imagen-container">
         <% if (reporteRel.tieneImagen()) { %>
         <img src="<%= request.getContextPath() %>/<%= imagen.getURL_Imagen() %>"
@@ -469,9 +472,9 @@
         </div>
         <% } %>
 
-        <!-- Badge de perdido -->
-        <div class="perdido-badge">
-          PERDIDO
+        <!-- Badge de estado -->
+        <div class="estado-badge <%= estaPerdido ? "badge-perdido" : estaEnCasa ? "badge-en-casa" : "" %>">
+          <%= estaPerdido ? "PERDIDO" : estaEnCasa ? "EN CASA" : reporte.getEstadoReporte().toUpperCase() %>
         </div>
 
         <!-- Ícono de sexo -->
@@ -487,7 +490,7 @@
         <p class="mascota-especie"><%= especie.getNombre() %></p>
 
         <div class="fecha-perdida">
-          📅 <strong>Perdido el:</strong> <%= sdf.format(reporte.getFechaDesaparicion()) %>
+          📅 <strong><%= estaPerdido ? "Perdido el:" : "Perdido el:" %></strong> <%= sdf.format(reporte.getFechaDesaparicion()) %>
         </div>
 
         <div class="ubicacion">
@@ -530,24 +533,40 @@
           💰 <strong>Recompensa:</strong> $<%= String.format("%.2f", reporte.getRecompensa()) %>
         </div>
         <% } %>
-      </div>
 
-      <div class="contacto">
-        <div class="contacto-info">
-          <div class="contacto-datos">
-            <div class="contacto-nombre">
-              👤 <%= reporteRel.getNombreCompleto() %>
-            </div>
-            <% if (usuario.getTelefono() != null && !usuario.getTelefono().trim().isEmpty()) { %>
-            <a href="tel:<%= usuario.getTelefono() %>" class="contacto-telefono">
-              📞 <%= usuario.getTelefono() %>
-            </a>
-            <% } %>
+        <!-- ACCIONES DEL REPORTE -->
+        <div class="acciones-reporte">
+          <% if (estaPerdido) { %>
+          <!-- Botón para marcar como encontrada -->
+          <a href="ReporteDesaparicionServlet?accion=marcar_encontrada&id=<%= reporte.getReporteID() %>"
+             class="btn btn-success btn-small"
+             onclick="return confirm('¿Está seguro de que su mascota ya está en casa? Esto cerrará el reporte.')">
+            🏠 Marcar como En Casa
+          </a>
+
+          <!-- Botón para editar -->
+          <a href="ReporteDesaparicionServlet?accion=editar&id=<%= reporte.getReporteID() %>"
+             class="btn btn-primary btn-small">
+            ✏️ Editar
+          </a>
+          <% } else if (estaEnCasa) { %>
+          <div style="background-color: #d4edda; color: #155724; padding: 10px; border-radius: 8px; margin-bottom: 10px; text-align: center;">
+            ✅ <strong>¡Mascota en casa!</strong><br>
+            <small>Esta mascota ya no está perdida</small>
           </div>
-          <div class="fecha-reporte">
-            Reportado el<br>
-            <%= sdf.format(reporte.getFecha_Registro()) %>
-          </div>
+          <% } %>
+
+          <!-- Botón para eliminar (siempre disponible) -->
+          <a href="ReporteDesaparicionServlet?accion=eliminar&id=<%= reporte.getReporteID() %>"
+             class="btn btn-danger btn-small"
+             onclick="return confirm('¿Está seguro de que desea eliminar este reporte? Esta acción no se puede deshacer.')">
+            🗑️ Eliminar
+          </a>
+        </div>
+
+        <!-- Fecha de reporte -->
+        <div class="fecha-reporte">
+          <strong>Reportado el:</strong> <%= sdf.format(reporte.getFecha_Registro()) %>
         </div>
       </div>
     </div>
@@ -556,39 +575,19 @@
   <% } else { %>
   <!-- Estado vacío -->
   <div class="empty-state">
-    <div class="empty-state-icon">🐾</div>
-    <% if (esUsuarioLogueado) { %>
-    <h3>No hay reportes de otros usuarios</h3>
-    <p>¡Excelente! Actualmente no hay otras mascotas reportadas como perdidas en tu área.
-      Revisa tus propios reportes desde "Mis Reportes".</p>
-    <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=mis_reportes" class="btn btn-primary">
-      📋 Ver Mis Reportes
-    </a>
-    <% } else { %>
-    <h3>No hay reportes de mascotas perdidas</h3>
-    <p>¡Que buena noticia! Actualmente no hay mascotas reportadas como perdidas.</p>
-    <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=registrar" class="btn btn-danger">
+    <div class="empty-state-icon">📋</div>
+    <h3>No tienes reportes de mascotas</h3>
+    <p>Aún no has reportado ninguna mascota como perdida. Esperamos que no sea necesario, pero si alguna vez necesitas ayuda para encontrar a tu mascota, estaremos aquí.</p>
+    <a href="ReporteDesaparicionServlet?accion=registrar" class="btn btn-danger">
       🚨 Reportar Mascota Perdida
     </a>
-    <% } %>
   </div>
   <% } %>
 
   <!-- Footer informativo -->
   <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-    <% if (esUsuarioLogueado) { %>
-    <h4>💡 ¿Encontraste una de estas mascotas?</h4>
-    <p>Si encontraste una mascota que coincide con alguno de estos reportes,
-      contacta inmediatamente al número de teléfono indicado.
-      Tu ayuda puede reunir a una familia con su querida mascota.
-      <br><br>
-      <strong>Nota:</strong> Tus propios reportes no aparecen aquí. Para gestionarlos, ve a "Mis Reportes".</p>
-    <% } else { %>
-    <h4>💡 ¿Encontraste una mascota perdida?</h4>
-    <p>Si encontraste una mascota que coincide con alguno de estos reportes,
-      contacta inmediatamente al número de teléfono indicado.
-      Tu ayuda puede reunir a una familia con su querida mascota.</p>
-    <% } %>
+    <h4>💡 Consejos para reportes efectivos</h4>
+    <p>Mantén tu reporte actualizado con la información más reciente. Si tu mascota regresa a casa, no olvides marcarla como "En Casa" para que otros sepan que ya no está perdida.</p>
   </div>
 </div>
 </body>

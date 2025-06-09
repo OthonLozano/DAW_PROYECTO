@@ -59,10 +59,17 @@
                         </a>
                     </div>
                     <div class="col-md-4">
-                        <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=misReportes" class="quick-action-btn">
+                        <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=mis_reportes" class="quick-action-btn">
                             <i class="fas fa-search-location"></i>
                             <h5>Mis Reportes</h5>
                             <p class="small text-muted">Revisa tus reportes de desaparición</p>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=listar" class="quick-action-btn">
+                            <i class="fas fa-search-location"></i>
+                            <h5>Reportes de otros</h5>
+                            <p class="small text-muted">Revisa los reportes de desaparición</p>
                         </a>
                     </div>
                 </div>
