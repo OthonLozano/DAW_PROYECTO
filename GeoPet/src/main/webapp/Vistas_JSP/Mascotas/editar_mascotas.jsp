@@ -1,138 +1,152 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.util.List" %>
 <%@ page import="Modelo.JavaBeans.Mascotas" %>
+<%@ page import="Modelo.JavaBeans.Especie" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Editar Mascota</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: black;
-        color: #333;
-        padding: 40px;
-      }
-
-      .contenedor {
-        max-width: 700px;
-        margin: auto;
-        background-color: #f8f4a7;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      }
-
-      h2 {
-        text-align: center;
-        color: #0f75b6;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-      }
-
-      label {
-        margin: 10px 0 5px;
-        font-weight: bold;
-      }
-
-      input, select {
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #aaa;
-      }
-
-      input[type="submit"] {
-        margin-top: 20px;
-        background-color: #0f75b6;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s ease;
-      }
-
-      input[type="submit"]:hover {
-        background-color: #0c5a8c;
-      }
-
-      .links {
-        text-align: center;
-        margin-top: 20px;
-      }
-
-      .links a {
-        color: #0f75b6;
-        text-decoration: none;
-        margin: 0 10px;
-      }
-
-      .links a:hover {
-        text-decoration: underline;
-        text-decoration-color: black;
-      }
-    </style>
 </head>
 <body>
-  <div class="contenedor">
-      <h2>Editar Mascota</h2>
-      <%
+<div class="contenedor">
+    <h2>Editar Mascota</h2>
+
+    <!-- Mostrar mensaje de éxito si existe -->
+    <% if (request.getAttribute("mensaje") != null) { %>
+    <div class="mensaje">
+        <%= request.getAttribute("mensaje") %>
+    </div>
+    <% } %>
+
+    <!-- Debug de especies -->
+    <%
+        List<Especie> especies = (List<Especie>) request.getAttribute("especies");
+        if (especies == null) {
+    %>
+    <div class="debug">Debug: Lista de especies es null</div>
+    <%
+    } else {
+    %>
+    <div class="debug">Debug: Se encontraron <%= especies.size() %> especies</div>
+    <%
+        }
+    %>
+
+    <%
         Mascotas m = (Mascotas) request.getAttribute("mascota");
-      %>
-      <form action="MascotaServlet" method="post">
+        if (m != null) {
+    %>
+    <div class="info-usuario">
+        Editando mascota "<%= m.getNombre() %>" (ID: <%= m.getMascotaID() %>)
+    </div>
+
+    <form action="MascotaServlet" method="post">
         <input type="hidden" name="accion" value="actualizar" />
         <input type="hidden" name="mascotaid" value="<%= m.getMascotaID() %>" />
-
-        <label for="r_usuario">Usuario ID:</label>
-        <input type="number" name="r_usuario" value="<%= m.getR_Usuario() %>" required />
 
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" value="<%= m.getNombre() %>" required />
 
-        <label for="r_especie">Especie ID:</label>
-        <input type="number" name="r_especie" value="<%= m.getR_Especie() %>" required />
+        <label for="r_especie">Especie:</label>
+        <select name="r_especie" required>
+            <option value="">Seleccionar especie...</option>
+            <%
+                if (especies != null && !especies.isEmpty()) {
+                    for (Especie especie : especies) {
+                        boolean selected = especie.getEspecieID() == m.getR_Especie();
+            %>
+            <option value="<%= especie.getEspecieID() %>" <%= selected ? "selected" : "" %>>
+                <%= especie.getNombre() %>
+            </option>
+            <%
+                }
+            } else {
+            %>
+            <option value="" disabled>No hay especies disponibles</option>
+            <%
+                }
+            %>
+        </select>
 
-        <label for="edad">Edad:</label>
-        <input type="number" name="edad" value="<%= m.getEdad() %>" required />
+        <label for="edad">Edad (en meses):</label>
+        <input type="number" name="edad" value="<%= m.getEdad() %>" required min="0" />
 
         <label for="sexo">Sexo:</label>
-        <select name="sexo">
-          <option value="macho" <%= "macho".equalsIgnoreCase(m.getSexo()) ? "selected" : "" %>>Macho</option>
-          <option value="hembra" <%= "hembra".equalsIgnoreCase(m.getSexo()) ? "selected" : "" %>>Hembra</option>
+        <select name="sexo" required>
+            <option value="">Seleccionar...</option>
+            <option value="Macho" <%= "Macho".equalsIgnoreCase(m.getSexo()) ? "selected" : "" %>>Macho</option>
+            <option value="Hembra" <%= "Hembra".equalsIgnoreCase(m.getSexo()) ? "selected" : "" %>>Hembra</option>
         </select>
 
         <label for="color">Color:</label>
         <input type="text" name="color" value="<%= m.getColor() %>" required />
 
         <label for="caracteristicasdistintivas">Características Distintivas:</label>
-        <input type="text" name="caracteristicasdistintivas" value="<%= m.getCaracteristicasDistintivas() %>" />
+        <input type="text" name="caracteristicasdistintivas" value="<%= m.getCaracteristicasDistintivas() != null ? m.getCaracteristicasDistintivas() : "" %>" />
 
         <label for="microchip">¿Tiene microchip?</label>
-        <select name="microchip">
-          <option value="true" <%= m.isMicrochip() ? "selected" : "" %>>Sí</option>
-          <option value="false" <%= !m.isMicrochip() ? "selected" : "" %>>No</option>
+        <select name="microchip" required>
+            <option value="">Seleccionar...</option>
+            <option value="true" <%= m.isMicrochip() ? "selected" : "" %>>Sí</option>
+            <option value="false" <%= !m.isMicrochip() ? "selected" : "" %>>No</option>
         </select>
 
-        <label for="numero_microchip">Número de Microchip:</label>
-        <input type="number" name="numero_microchip" value="<%= m.getNumero_Microchip() %>" />
+        <label for="numero_microchip">Número de Microchip (opcional):</label>
+        <input type="number" name="numero_microchip" value="<%= m.getNumero_Microchip() != 0 ? String.valueOf(m.getNumero_Microchip()) : "" %>" />
 
         <label for="estado">Estado:</label>
-        <select name="estado">
-          <option value="Perdida" <%= "Perdida".equalsIgnoreCase(m.getEstado()) ? "selected" : "" %>>Perdida</option>
-          <option value="En casa" <%= "En casa".equalsIgnoreCase(m.getEstado()) ? "selected" : "" %>>En casa</option>
+        <select name="estado" required>
+            <option value="">Seleccionar...</option>
+            <option value="Perdida" <%= "Perdida".equalsIgnoreCase(m.getEstado()) ? "selected" : "" %>>Perdida</option>
+            <option value="En casa" <%= "En casa".equalsIgnoreCase(m.getEstado()) ? "selected" : "" %>>En casa</option>
         </select>
 
         <label for="fecha_registro">Fecha de Registro:</label>
-        <input type="date" name="fecha_registro" value="<%= m.getFecha_Registro() %>" required />
+        <input type="date" name="fecha_registro" id="fecha_registro" value="<%= m.getFecha_Registro() %>" required />
 
         <input type="submit" value="Actualizar" />
-      </form>
+    </form>
 
-      <div class="links">
+    <%
+    } else {
+    %>
+    <div class="mensaje" style="background-color: #f8d7da; color: #721c24;">
+        <strong>ERROR:</strong> No se encontró la mascota a editar.
+    </div>
+    <%
+        }
+    %>
+
+    <div class="links">
         <a href="MascotaServlet?accion=listar">Volver a la lista</a>
+        <a href="EspecieServlet?accion=listar">Gestionar Especies</a>
         <a href="index.jsp">Menú Principal</a>
-      </div>
-  </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var fechaInput = document.getElementById('fecha_registro');
+
+        // Obtener la fecha actual en la zona horaria local
+        var today = new Date();
+        var year = today.getFullYear();
+        var month = String(today.getMonth() + 1).padStart(2, '0');
+        var day = String(today.getDate()).padStart(2, '0');
+        var todayString = year + '-' + month + '-' + day;
+
+        // Establecer la fecha máxima como hoy
+        fechaInput.max = todayString;
+
+        // Establecer una fecha mínima (10 años atrás)
+        var tenYearsAgo = new Date();
+        tenYearsAgo.setFullYear(tenYearsAgo.getFullYear() - 10);
+        var minYear = tenYearsAgo.getFullYear();
+        var minMonth = String(tenYearsAgo.getMonth() + 1).padStart(2, '0');
+        var minDay = String(tenYearsAgo.getDate()).padStart(2, '0');
+        fechaInput.min = minYear + '-' + minMonth + '-' + minDay;
+    });
+</script>
 </body>
 </html>

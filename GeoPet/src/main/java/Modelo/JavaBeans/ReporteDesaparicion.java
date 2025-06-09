@@ -11,13 +11,31 @@ public class ReporteDesaparicion implements Serializable {
     private int R_Usuario;
     private Date FechaDesaparicion;
     private String UbicacionUltimaVez;
+    private String DescripcionSituacion;
     private double Recompensa;
     private String EstadoReporte;
     private Date Fecha_Registro;
+    private String Estatus;
 
+    // Constructores
     public ReporteDesaparicion() {
     }
 
+    public ReporteDesaparicion(int r_Mascota, int r_Usuario, Date fechaDesaparicion,
+                               String ubicacionUltimaVez, String descripcionSituacion,
+                               double recompensa, String estadoReporte, Date fecha_Registro, String estatus) {
+        R_Mascota = r_Mascota;
+        R_Usuario = r_Usuario;
+        FechaDesaparicion = fechaDesaparicion;
+        UbicacionUltimaVez = ubicacionUltimaVez;
+        DescripcionSituacion = descripcionSituacion;
+        Recompensa = recompensa;
+        EstadoReporte = estadoReporte;
+        Fecha_Registro = fecha_Registro;
+        Estatus = estatus;
+    }
+
+    // Getters y Setters existentes
     public int getReporteID() {
         return ReporteID;
     }
@@ -58,6 +76,15 @@ public class ReporteDesaparicion implements Serializable {
         UbicacionUltimaVez = ubicacionUltimaVez;
     }
 
+    // ⬅️ NUEVOS getters y setters
+    public String getDescripcionSituacion() {
+        return DescripcionSituacion;
+    }
+
+    public void setDescripcionSituacion(String descripcionSituacion) {
+        DescripcionSituacion = descripcionSituacion;
+    }
+
     public double getRecompensa() {
         return Recompensa;
     }
@@ -80,5 +107,29 @@ public class ReporteDesaparicion implements Serializable {
 
     public void setFecha_Registro(Date fecha_Registro) {
         Fecha_Registro = fecha_Registro;
+    }
+
+    public String getEstatus() {
+        return Estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        Estatus = estatus;
+    }
+
+    @Override
+    public String toString() {
+        return "ReporteDesaparicion{" +
+                "ReporteID=" + ReporteID +
+                ", R_Mascota=" + R_Mascota +
+                ", R_Usuario=" + R_Usuario +
+                ", FechaDesaparicion=" + FechaDesaparicion +
+                ", UbicacionUltimaVez='" + UbicacionUltimaVez + '\'' +
+                ", DescripcionSituacion='" + DescripcionSituacion + '\'' +
+                ", Recompensa=" + Recompensa +
+                ", EstadoReporte='" + EstadoReporte + '\'' +
+                ", Fecha_Registro=" + Fecha_Registro +
+                ", Estatus='" + Estatus + '\'' +
+                '}';
     }
 }

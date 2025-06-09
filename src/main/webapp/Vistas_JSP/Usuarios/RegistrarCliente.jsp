@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -85,6 +86,32 @@
             color: #1b5e20;
             text-decoration: none;
         }
+
+        .alert {
+            display: none;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #alertContainer {
+            min-height: 0;
+            transition: min-height 0.3s ease;
+        }
+
+        #alertContainer:empty {
+            min-height: 0;
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -167,25 +194,25 @@
                             </button>
                         </form>
 
-                        <!-- Mensajes de error o éxito - Colocar justo después del formulario -->
-                        <c:choose>
-                            <c:when test="${not empty success}">
+                        <!-- Mensajes de error o éxito -->
+                        <div id="alertContainer">
+                            <c:if test="${not empty msg}">
                                 <div class="alert alert-success d-flex align-items-center" role="alert">
                                     <i class="bi bi-check-circle-fill me-2"></i>
-                                    <div>${success}</div>
+                                    <div>${msg}</div>
                                 </div>
-                            </c:when>
-                            <c:when test="${not empty error}">
+                            </c:if>
+                            <c:if test="${not empty error}">
                                 <div class="alert alert-danger d-flex align-items-center" role="alert">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     <div>${error}</div>
                                 </div>
-                            </c:when>
-                        </c:choose>
+                            </c:if>
+                        </div>
 
                         <div class="text-center">
                             <p class="mb-0">¿Ya tienes una cuenta?</p>
-                            <a href="${pageContext.request.contextPath}/LoginServlet" class="btn btn-outline-success">
+                            <a href="${pageContext.request.contextPath}/LoginServlet" class="login-link">
                                 <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
                             </a>
                         </div>
@@ -198,5 +225,25 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para manejar alertas -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertContainer = document.getElementById('alertContainer');
+        const alerts = alertContainer.querySelectorAll('.alert');
+        
+        // Mostrar las alertas que tengan contenido
+        alerts.forEach(alert => {
+            if (alert.textContent.trim()) {
+                alert.classList.add('show');
+            }
+        });
+
+        // Si no hay alertas visibles, ocultar el contenedor
+        if (!alertContainer.querySelector('.alert.show')) {
+            alertContainer.style.display = 'none';
+        }
+    });
+</script>
 </body>
-</html>
+</html> 

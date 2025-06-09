@@ -1,116 +1,179 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="Modelo.JavaBeans.Especie" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Especie</title>
+    <title>Registrar Mascota</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: black;
-            margin: 40px;
-            padding: 20px;
             color: #333;
+            padding: 40px;
         }
+
         .contenedor {
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin: auto;
             background-color: #f8f4a7;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
+
         h2 {
             text-align: center;
             color: #0f75b6;
         }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
         label {
-            display: block;
-            margin-top: 10px;
+            margin: 10px 0 5px;
             font-weight: bold;
         }
-        .boton {
-            margin-top: 20px;
-            text-align: center;
-        }
-        input[type="text"] {
-            width: 100%;
+
+        input, select {
             padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            background-color: #2a5d84;
-            color: white;
-            padding: 10px 20px;
-            border: none;
             border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+
+        input[type="submit"] {
+            margin-top: 20px;
+            background-color: #0f75b6;
+            color: white;
+            border: none;
             cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
+
         input[type="submit"]:hover {
-            background-color: #1b3f5a;
+            background-color: #0c5a8c;
         }
-        a {
-            display: inline-block;
-            margin-top: 15px;
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
             color: #0f75b6;
             text-decoration: none;
+            margin: 0 10px;
         }
-        a:hover {
+
+        .links a:hover {
             text-decoration: underline;
             text-decoration-color: black;
-            text-decoration-thickness: 2px;
         }
-        .links {
-            display: block;
-            margin-top: 20px;
+
+        .mensaje {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
             text-align: center;
+        }
+
+        .info-usuario {
+            background-color: #e7f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #0f75b6;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <div class="contenedor">
-    <h2>Registrar Nueva Especie</h2>
+    <h2>Registrar Mascota</h2>
 
-    <form action="${pageContext.request.contextPath}/EspecieServlet" method="post">
-    <input type="hidden" name="accion" value="registrar"/>
+    <!-- Mostrar mensaje de éxito si existe -->
+    <% if (request.getAttribute("mensaje") != null) { %>
+    <div class="mensaje">
+        <%= request.getAttribute("mensaje") %>
+    </div>
+    <% } %>
+
+    <!-- Mostrar información del usuario logueado (opcional) -->
+    <%
+        // Obtener el ID del usuario directamente de la sesión o del atributo
+        Integer usuarioId = (Integer) request.getAttribute("usuarioId");
+        if (usuarioId == null) {
+            usuarioId = (Integer) session.getAttribute("usuarioId");
+        }
+        if (usuarioId != null) {
+    %>
+    <div class="info-usuario">
+        Registrando mascota para el usuario ID: <%= usuarioId %>
+    </div>
+    <% } %>
+
+    <form action="MascotaServlet" method="post">
+        <input type="hidden" name="accion" value="registrar" />
+
+        <!-- Campo oculto para el ID del usuario - toma el valor de la sesión -->
+        <input type="hidden" name="r_usuario" value="<%= usuarioId != null ? usuarioId : session.getAttribute("usuarioId") %>" />
 
         <label for="nombre">Nombre:</label>
-        <input type="text" name="nombre" id="nombre" required/>
+        <input type="text" name="nombre" required />
 
-        <label for="descripcion">Descripción:</label>
-        <input type="text" name="descripcion" id="descripcion" required/>
+        <label for="r_especie">Especie ID:</label>
+        <input type="number" name="r_especie" required />
 
-        <div class="boton">
-            <input type="submit" value="Registrar"/>
-        </div>
+        <label for="edad">Edad:</label>
+        <input type="number" name="edad" required />
 
-        <% String mensaje = (String) request.getAttribute("mensaje"); %>
-        <% if (mensaje != null) { %>
-        <div id="mensajeExito" style="color: green; font-weight: bold; text-align: center;">
-            <%= mensaje %>
-        </div>
+        <label for="sexo">Sexo:</label>
+        <select name="sexo" required>
+            <option value="">Seleccionar...</option>
+            <option value="macho">Macho</option>
+            <option value="hembra">Hembra</option>
+        </select>
 
-        <script>
-            // Espera 2 segundos y oculta el mensaje
-            setTimeout(function () {
-                var mensaje = document.getElementById("mensajeExito");
-                if (mensaje) {
-                    mensaje.style.display = "none";
-                }
-            }, 2000);
-        </script>
-        <% } %>
+        <label for="color">Color:</label>
+        <input type="text" name="color" required />
 
+        <label for="caracteristicasdistintivas">Características Distintivas:</label>
+        <input type="text" name="caracteristicasdistintivas" />
+
+        <label for="microchip">¿Tiene microchip?</label>
+        <select name="microchip" required>
+            <option value="">Seleccionar...</option>
+            <option value="true">Sí</option>
+            <option value="false">No</option>
+        </select>
+
+        <label for="numero_microchip">Número de Microchip (opcional):</label>
+        <input type="number" name="numero_microchip" />
+
+        <label for="estado">Estado:</label>
+        <select name="estado" required>
+            <option value="">Seleccionar...</option>
+            <option value="Perdida">Perdida</option>
+            <option value="En casa">En casa</option>
+        </select>
+
+        <label for="fecha_registro">Fecha de Registro:</label>
+        <input type="date" name="fecha_registro" required />
+
+        <input type="submit" value="Registrar" />
     </form>
 
     <div class="links">
-        <a href="${pageContext.request.contextPath}/EspecieServlet?accion=listar">Listar Especies</a><br>
-        <a href="${pageContext.request.contextPath}/index.jsp">Menú Principal</a>
+        <a href="MascotaServlet?accion=listar">Volver a la lista</a>
+        <a href="index.jsp">Menú Principal</a>
     </div>
 </div>
 </body>
 </html>
-
-

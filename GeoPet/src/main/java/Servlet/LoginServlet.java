@@ -26,7 +26,14 @@ public class LoginServlet extends HttpServlet {
             Usuarios user = dao.login(email, pass);
             if (user != null) {
                 HttpSession session = request.getSession(true);
+
+                // Guardar el objeto usuario completo
                 session.setAttribute("usuario", user);
+
+                // NUEVO: Guardar también el ID del usuario por separado
+                session.setAttribute("usuarioId", user.getUsuarioID()); // ← Agregar esta línea
+
+                System.out.println("DEBUG Login: Usuario logueado - ID: " + user.getUsuarioID() + ", Rol: " + user.getUsuario());
 
                 // Redirige según rol
                 switch (user.getUsuario()) {
@@ -50,4 +57,3 @@ public class LoginServlet extends HttpServlet {
         }
     }
 }
-

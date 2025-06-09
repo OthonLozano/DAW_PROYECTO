@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Conexion {
     // Parámetros de conexión
-    private final String url      = "jdbc:postgresql://localhost:5433/CreacionTablas";
+    private final String url      = "jdbc:postgresql://localhost:5432/CreacionTablas";
     private final String usuario  = "postgres";
     private final String password = "mouse";
 

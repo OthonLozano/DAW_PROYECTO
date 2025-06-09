@@ -59,24 +59,40 @@ public class EspecieDAO {
     }
 
     //Listar
-    public List ListarEspecies() {
-        List<Especie> ListaEs = new ArrayList();
+    public List<Especie> ListarEspecies() {
+        List<Especie> ListaEs = new ArrayList<>();
         String sql = "SELECT * FROM especie WHERE estatus ='Alta'";
 
         try {
+            System.out.println("=== DEBUG EspecieDAO: Iniciando ListarEspecies ===");
             this.con = this.cn.getConnection();
+
+            if (this.con == null || this.con.isClosed()) {
+                System.out.println("ERROR: Conexión es null o está cerrada");
+                return ListaEs;
+            }
+
+            System.out.println("DEBUG: Conexión establecida correctamente");
             this.ps = this.con.prepareStatement(sql);
             this.rs = this.ps.executeQuery();
 
+            int contador = 0;
             while(this.rs.next()) {
                 Especie es = new Especie();
                 es.setEspecieID(this.rs.getInt("especieid"));
                 es.setNombre(this.rs.getString("nombre"));
                 es.setDescripcion(this.rs.getString("descripcion"));
                 ListaEs.add(es);
+                contador++;
+
+                System.out.println("DEBUG: Especie " + contador + " - " + es.getNombre() + " (ID: " + es.getEspecieID() + ")");
             }
+
+            System.out.println("DEBUG: Total especies encontradas: " + contador);
+
         } catch (SQLException e) {
             System.out.println("Error al listar especies: " + e.toString());
+            e.printStackTrace();
         } finally {
             try {
                 if (this.rs != null) this.rs.close();
@@ -87,6 +103,7 @@ public class EspecieDAO {
             }
         }
 
+        System.out.println("=== DEBUG EspecieDAO: Finalizando ListarEspecies con " + ListaEs.size() + " elementos ===");
         return ListaEs;
     }
 

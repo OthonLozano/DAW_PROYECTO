@@ -1,5 +1,4 @@
 <%@ page import="Modelo.JavaBeans.Usuarios" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ page session="true" %>
 <%
     // Si ya hay un usuario en sesión, redirige a su dashboard
@@ -25,7 +24,6 @@
         return;  // importante: nada más de este JSP se ejecuta
     }
 %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -67,6 +65,14 @@
 
         .login-header h2 {
             font-weight: 700;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-header p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .login-body {
@@ -116,13 +122,24 @@
         .feature-item {
             display: flex;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: white;
+            font-size: 1.1rem;
         }
 
         .feature-icon {
             margin-right: 1rem;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert {
+            display: none;
+            margin-bottom: 1rem;
+        }
+
+        .alert.show {
+            display: flex;
         }
     </style>
 </head>
@@ -140,7 +157,7 @@
                                 <h2 class="mb-3">
                                     <i class="bi bi-heart-fill me-2"></i>GeoPet
                                 </h2>
-                                <p class="mb-0">Reuniendo familias con sus mascotas perdidas</p>
+                                <p class="mb-4">Reuniendo familias con sus mascotas perdidas</p>
 
                                 <div class="mt-4">
                                     <div class="feature-item">
@@ -172,14 +189,12 @@
                                 </h3>
 
                                 <!-- Mostrar errores si existen -->
-                                <c:if test="${param.error != null}">
-                                    <div class="alert alert-danger d-flex align-items-center" role="alert">
-                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                        <div>${param.error}</div>
-                                    </div>
-                                </c:if>
+                                <div id="errorAlert" class="alert alert-danger d-flex align-items-center" role="alert" style="display: none;">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <div id="errorMessage"></div>
+                                </div>
 
-                                <form action="${pageContext.request.contextPath}/LoginServlet" method="post">
+                                <form action="${pageContext.request.contextPath}/LoginServlet" method="post" id="loginForm">
                                     <div class="mb-3">
                                         <label for="email" class="form-label">
                                             <i class="bi bi-envelope me-2"></i>Correo Electrónico
@@ -202,6 +217,10 @@
                                     </button>
                                 </form>
 
+                                <div class="text-center mb-3">
+                                    <a href="#" class="small text-muted">¿Olvidaste tu contraseña?</a>
+                                </div>
+
                                 <hr class="my-4">
 
                                 <div class="text-center">
@@ -210,13 +229,6 @@
                                         <i class="bi bi-person-plus me-2"></i>
                                         Regístrate aquí
                                     </a>
-                                </div>
-
-                                <div class="text-center mt-3">
-                                    <small class="text-muted">
-                                        <i class="bi bi-shield-check me-1"></i>
-                                        Tus datos están seguros con nosotros
-                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -229,5 +241,20 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Script para manejar mensajes de error -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        
+        if (error) {
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = decodeURIComponent(error);
+            errorAlert.style.display = 'flex';
+        }
+    });
+</script>
 </body>
-</html>
+</html> 
