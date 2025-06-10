@@ -15,32 +15,6 @@
                 </div>
             </div>
             <div class="col-md-2 mb-3">
-                <h6>Navegación</h6>
-                <ul class="list-unstyled">
-                    <li><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
-                    <li><a href="${pageContext.request.contextPath}/mascotas?action=listar">Mascotas</a></li>
-                    <li><a href="${pageContext.request.contextPath}/avistamientos?action=listar">Avistamientos</a></li>
-                    <li><a href="${pageContext.request.contextPath}/usuarios?action=listar">Usuarios</a></li>
-                </ul>
-            </div>
-            <div class="col-md-2 mb-3">
-                <h6>Servicios</h6>
-                <ul class="list-unstyled">
-                    <li><a href="${pageContext.request.contextPath}/reportes">Reportes</a></li>
-                    <li><a href="${pageContext.request.contextPath}/comentarios?action=listar">Comentarios</a></li>
-                    <li><a href="${pageContext.request.contextPath}/ayuda">Ayuda</a></li>
-                    <li><a href="${pageContext.request.contextPath}/contacto">Contacto</a></li>
-                </ul>
-            </div>
-            <div class="col-md-2 mb-3">
-                <h6>Legal</h6>
-                <ul class="list-unstyled">
-                    <li><a href="${pageContext.request.contextPath}/privacidad">Privacidad</a></li>
-                    <li><a href="${pageContext.request.contextPath}/terminos">Términos</a></li>
-                    <li><a href="${pageContext.request.contextPath}/cookies">Cookies</a></li>
-                </ul>
-            </div>
-            <div class="col-md-2 mb-3">
                 <h6>Contacto</h6>
                 <ul class="list-unstyled">
                     <li><i class="bi bi-envelope me-2"></i>info@geopet.com</li>

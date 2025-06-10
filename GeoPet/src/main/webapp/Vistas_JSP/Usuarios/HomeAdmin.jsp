@@ -148,7 +148,7 @@
                         <i class="fas fa-users card-icon"></i>
                         <h3 class="card-title">Usuarios</h3>
                         <p class="card-text">Visualiza y gestiona todos los usuarios del sistema</p>
-                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/listar_usuarios.jsp" class="btn btn-primary">
+                        <a href="<%= request.getContextPath() %>/UsuariosServlet" class="btn btn-primary">
                             <i class="fas fa-user-cog me-2"></i>Gestionar Usuarios
                         </a>
                     </div>

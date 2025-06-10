@@ -7,12 +7,12 @@ import Modelo.DAO.AvistamientoDAO;
 import Modelo.JavaBeans.ReporteDesaparicion;
 import Modelo.JavaBeans.ReporteConRelaciones;
 import Modelo.JavaBeans.Mascotas;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import Modelo.JavaBeans.Usuarios;
-=======
+//=======
 import Modelo.JavaBeans.ComentariosConRelaciones;
 import Modelo.JavaBeans.AvistamientoConRelaciones;
->>>>>>> 39a0118bbe287a0f5837b05a23a2248c3c0600a9
+//>>>>>>> 39a0118bbe287a0f5837b05a23a2248c3c0600a9
 
 import java.io.*;
 import jakarta.servlet.ServletException;

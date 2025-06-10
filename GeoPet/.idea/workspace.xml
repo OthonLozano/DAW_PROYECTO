@@ -10,26 +10,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/AvistamientoConRelaciones.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/ComentariosConRelaciones.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/detalle_mascota_perdida.jsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/detalle_mi_mascota.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webContexts.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/webContexts.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/AvistamientoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/AvistamientoDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ComentariosDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ComentariosDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Avistamiento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Avistamiento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Comentarios.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/JavaBeans/Comentarios.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/AvistamientoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/AvistamientoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/ComentariosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/ComentariosServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/RazaServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/UsuariosDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/UsuariosServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlets/LoginServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlets/LogoutServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Common/footer.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Common/footer.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Common/header.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Common/header.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeAdmin.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeAdmin.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeCliente.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeCliente.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/listar_usuarios.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/listar_usuarios.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,6 +175,9 @@
       <workItem from="1749505050773" duration="5492000" />
       <workItem from="1749514328637" duration="19262000" />
       <workItem from="1749562193164" duration="3390000" />
+      <workItem from="1749567977126" duration="3840000" />
+      <workItem from="1749574417695" duration="98000" />
+      <workItem from="1749574584438" duration="4784000" />
     </task>
     <servers />
   </component>

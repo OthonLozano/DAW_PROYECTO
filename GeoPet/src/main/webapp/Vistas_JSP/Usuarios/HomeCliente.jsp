@@ -26,14 +26,6 @@
 
 <main class="main-container">
     <div class="container py-5">
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb-geopet mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="${pageContext.request.contextPath}/index.jsp">Inicio</a></li>
-                <li class="breadcrumb-item active">Panel de Cliente</li>
-            </ol>
-        </nav>
-
         <!-- Welcome Card -->
         <div class="geopet-card mb-5 fade-in">
             <div class="geopet-card-header">
@@ -74,15 +66,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Logout Section -->
-        <div class="text-center mt-5">
-            <form action="${pageContext.request.contextPath}/LogoutServlet" method="post">
-                <button type="submit" class="btn btn-geopet-outline">
-                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                </button>
-            </form>
         </div>
     </div>
 </main>

@@ -6,8 +6,19 @@
     // Si ya hay un usuario en sesión, redirige a su dashboard
     Usuarios user = (Usuarios) session.getAttribute("usuario");
     if (user != null) {
-        String rol = user.getUsuario();  // "SuperAdmin", "Admin" o "Cliente"
+        // NUEVA VALIDACIÓN: Verificar el estatus del usuario
+        String estatus = user.getEstatus();
         String ctx = request.getContextPath();
+
+        // Si el usuario está dado de baja, invalidar sesión y mostrar error
+        if ("Baja".equals(estatus)) {
+            session.invalidate();
+            response.sendRedirect(ctx + "/login.jsp?error=Usuario+eliminado.+Contacte+al+administrador+para+más+información.");
+            return;
+        }
+
+        // Si el usuario está activo, proceder normalmente
+        String rol = user.getUsuario();  // "Admin" o "Cliente"
         switch (rol) {
             case "Admin":
                 response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeAdmin.jsp");
@@ -138,6 +149,43 @@
             border-radius: 50%;
             margin-bottom: 1rem;
         }
+
+        /* Estilos para diferentes tipos de alertas */
+        .alert-usuario-eliminado {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+        }
+
+        .alert-usuario-eliminado .alert-icon {
+            color: #dc3545;
+            font-size: 1.2rem;
+        }
+
+        .alert-dismissible .btn-close {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 2;
+            padding: 1.25rem 1rem;
+        }
+
+        /* Animación para alertas */
+        .alert {
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -154,8 +202,9 @@
                     <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
                 </a>
             </div>
+
             <div class="col-lg-6 text-center">
-                <img src="img/pets-hero.png" alt="Mascotas" class="img-fluid" style="max-height: 400px;">
+                <img src="Resources/Imagen/Mascotas.png" alt="Mascotas" class="img-fluid" style="max-height: 400px;">
             </div>
         </div>
     </div>
@@ -208,13 +257,35 @@
                 </div>
                 <div class="login-body">
                     <%
-                    String error = request.getParameter("error");
-                    if (error != null && !error.isEmpty()) {
+                        String error = request.getParameter("error");
+                        if (error != null && !error.isEmpty()) {
+                            // Determinar el tipo de error para mostrar el estilo apropiado
+                            boolean esUsuarioEliminado = error.toLowerCase().contains("eliminado") ||
+                                    error.toLowerCase().contains("baja") ||
+                                    error.toLowerCase().contains("desactivado");
+                            String claseAlert = esUsuarioEliminado ? "alert-usuario-eliminado" : "alert-danger";
+                            String iconoAlert = esUsuarioEliminado ? "bi-person-x-fill" : "bi-exclamation-triangle-fill";
                     %>
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div><%= error %></div>
+                    <div class="alert <%= claseAlert %> alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="bi <%= iconoAlert %> alert-icon me-3"></i>
+                            <div class="flex-grow-1">
+                                <% if (esUsuarioEliminado) { %>
+                                <strong>Acceso Denegado:</strong><br>
+                                <%= error.replace("+", " ") %>
+                                <hr class="my-2">
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Si crees que esto es un error, contacta al administrador del sistema.
+                                </small>
+                                <% } else { %>
+                                <strong>Error de Autenticación:</strong><br>
+                                <%= error.replace("+", " ") %>
+                                <% } %>
+                            </div>
                         </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                     <% } %>
 
                     <form action="${pageContext.request.contextPath}/LoginServlet" method="post">
@@ -249,35 +320,25 @@
                             Regístrate aquí
                         </a>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Testimonials Section -->
-<section class="container mb-5">
-    <h2 class="text-center mb-5">Lo que dicen nuestros usuarios</h2>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <img src="img/avatar1.jpg" alt="Usuario" class="testimonial-avatar">
-                <h5>María González</h5>
-                <p class="text-muted">"Gracias a GeoPet encontré a mi perro Luna después de 3 días perdida. ¡La mejor plataforma!"</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <img src="img/avatar2.jpg" alt="Usuario" class="testimonial-avatar">
-                <h5>Carlos Rodríguez</h5>
-                <p class="text-muted">"La comunidad es increíble. Todos se ayudan mutuamente para encontrar mascotas perdidas."</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="testimonial-card">
-                <img src="img/avatar3.jpg" alt="Usuario" class="testimonial-avatar">
-                <h5>Ana Martínez</h5>
-                <p class="text-muted">"Las notificaciones instantáneas son muy útiles. Me ayudaron a encontrar a mi gato rápidamente."</p>
+                    <!-- Información adicional para usuarios con problemas -->
+                    <% if (error != null && (error.toLowerCase().contains("eliminado") || error.toLowerCase().contains("baja"))) { %>
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>¿Necesitas ayuda?</strong><br>
+                            <small>
+                                Si tu cuenta fue desactivada por error, puedes:
+                                <ul class="list-unstyled mt-2 mb-0">
+                                    <li><i class="bi bi-envelope me-1"></i> Contactar soporte: soporte@geopet.com</li>
+                                    <li><i class="bi bi-telephone me-1"></i> Llamar: +52 (xxx) xxx-xxxx</li>
+                                </ul>
+                            </small>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>
@@ -292,7 +353,7 @@
                 <p class="mb-0">Reuniendo familias con sus mascotas perdidas</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <p class="mb-0">© 2024 GeoPet. Todos los derechos reservados.</p>
+                <p class="mb-0">© 2025 GeoPet. Todos los derechos reservados.</p>
             </div>
         </div>
     </div>
@@ -300,5 +361,46 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Auto-ocultar alertas después de 10 segundos (más tiempo para leer el mensaje de usuario eliminado)
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                if (alert && !alert.classList.contains('fade')) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 10000); // 10 segundos
+        });
+    });
+
+    // Mostrar alerta más prominente si es error de usuario eliminado
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertUsuarioEliminado = document.querySelector('.alert-usuario-eliminado');
+        if (alertUsuarioEliminado) {
+            // Hacer scroll hasta la alerta
+            alertUsuarioEliminado.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Efecto de pulso para llamar la atención
+            alertUsuarioEliminado.style.animation = 'pulse 2s infinite';
+
+            // Quitar el efecto después de 6 segundos
+            setTimeout(() => {
+                alertUsuarioEliminado.style.animation = '';
+            }, 6000);
+        }
+    });
+</script>
+
+<style>
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+</style>
+
 </body>
 </html>

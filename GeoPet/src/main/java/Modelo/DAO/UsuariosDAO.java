@@ -10,13 +10,11 @@ import java.util.*;
 public class UsuariosDAO {
 
     private static final String CREATE = "INSERT INTO Usuarios(Nombre, ApellidoPat, ApellidoMat, Email, Contrasenia, Telefono, Direccion, Ciudad, Fecha_Registro, Usuario, Estatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATECLIENT = "INSERT INTO Usuarios(Nombre, ApellidoPat, ApellidoMat, Email, Contrasenia, Telefono, Direccion, Ciudad, Fecha_Registro, Usuario, Estatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Alta')";
-    private static final String CREATEADMIN = "INSERT INTO Usuarios(Nombre, ApellidoPat, ApellidoMat, Email, Contrasenia, Telefono, Direccion, Ciudad, Fecha_Registro, Usuario, Estatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Alta')";
     private static final String READ = "SELECT * FROM Usuarios";
     private static final String UPDATE = "UPDATE Usuarios SET Nombre=?, ApellidoPat=?, ApellidoMat=?, Email=?, Contrasenia=?, Telefono=?, Direccion=?, Ciudad=?, Fecha_Registro=?, Usuario=?, Estatus=? WHERE UsuarioID=?";
     private static final String DELETE = "DELETE FROM Usuarios WHERE UsuarioID=?";
 
-    // Método para crear un nuevo Cliente
+    // Método para registrar cliente (nuevo método limpio)
     public void registrarCliente(Usuarios u) throws SQLException {
         String sql = """
             INSERT INTO Usuarios
@@ -46,7 +44,7 @@ public class UsuariosDAO {
         }
     }
 
-    // Método para crear un nuevo Cliente
+    // Método para crear cliente (corregido)
     public int createClient(Usuarios u) {
         int registros = 0;
         Conexion conexion = new Conexion();
@@ -63,17 +61,18 @@ public class UsuariosDAO {
             ps.setString(7, u.getDireccion());
             ps.setString(8, u.getCiudad());
             ps.setDate(9, new java.sql.Date(u.getFecha_Registro().getTime()));
-            ps.setString(10, u.getUsuario());
-            //ps.setString(11, u.getEstatus());
+            ps.setString(10, u.getUsuario() != null ? u.getUsuario() : "Cliente"); // Valor por defecto
+            ps.setString(11, u.getEstatus() != null ? u.getEstatus() : "Alta"); // Valor por defecto
 
             registros = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace(System.out);
+            System.err.println("Error al crear usuario: " + e.getMessage());
         }
         return registros;
     }
 
-    // Método para listar todos los usuarios
+    // Método para listar todos los usuarios (con debug)
     public List<Usuarios> listar() {
         List<Usuarios> lista = new ArrayList<>();
         Conexion conexion = new Conexion();
@@ -86,13 +85,16 @@ public class UsuariosDAO {
                 Usuarios u = mapUsuario(rs);
                 lista.add(u);
             }
+            // Debug: Mostrar cuántos usuarios se encontraron
+            System.out.println("Usuarios encontrados: " + lista.size());
         } catch (SQLException e) {
             e.printStackTrace(System.out);
+            System.err.println("Error al listar usuarios: " + e.getMessage());
         }
         return lista;
     }
 
-    // Método para actualizar un usuario existente
+    // Método para actualizar usuario (corregido)
     public int actualizar(Usuarios u) {
         int registros = 0;
         Conexion conexion = new Conexion();
@@ -109,18 +111,19 @@ public class UsuariosDAO {
             ps.setString(7, u.getDireccion());
             ps.setString(8, u.getCiudad());
             ps.setDate(9, new java.sql.Date(u.getFecha_Registro().getTime()));
-            ps.setString(10, u.getUsuario());
-            //ps.setString(11, u.getEstatus());
+            ps.setString(10, u.getUsuario() != null ? u.getUsuario() : "Cliente");
+            ps.setString(11, u.getEstatus() != null ? u.getEstatus() : "Alta");
             ps.setInt(12, u.getUsuarioID());
 
             registros = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace(System.out);
+            System.err.println("Error al actualizar usuario: " + e.getMessage());
         }
         return registros;
     }
 
-    // Método para eliminar un usuario por su ID
+    /*// Método para eliminar usuario
     public int eliminar(int id) {
         int registros = 0;
         Conexion conexion = new Conexion();
@@ -132,20 +135,21 @@ public class UsuariosDAO {
             registros = ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace(System.out);
+            System.err.println("Error al eliminar usuario: " + e.getMessage());
         }
         return registros;
-    }
+    }*/
 
-    // Método para buscar un usuario por nombre
+    // Método para buscar usuario por nombre
     public List<Usuarios> buscarPorNombre(String nombre) {
         List<Usuarios> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Usuarios WHERE Nombre = ?";
+        String sql = "SELECT * FROM Usuarios WHERE Nombre LIKE ?";
         Conexion conexion = new Conexion();
         try (
                 Connection conn = conexion.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
         ) {
-            ps.setString(1, nombre);
+            ps.setString(1, "%" + nombre + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     lista.add(mapUsuario(rs));
@@ -157,7 +161,7 @@ public class UsuariosDAO {
         return lista;
     }
 
-    // Método para buscar un usuario por email
+    // Método para buscar usuario por email
     public Usuarios buscarPorEmail(String email) {
         String sql = "SELECT * FROM Usuarios WHERE Email = ?";
         Conexion conexion = new Conexion();
@@ -177,7 +181,27 @@ public class UsuariosDAO {
         return null;
     }
 
-    // Método que mapea un ResultSet a un objeto de tipo Usuarios
+    // Método para obtener usuario por ID
+    public Usuarios obtenerPorId(int id) {
+        String sql = "SELECT * FROM Usuarios WHERE UsuarioID = ?";
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapUsuario(rs);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        }
+        return null;
+    }
+
+    // Método que mapea ResultSet a objeto Usuario (CORREGIDO)
     private Usuarios mapUsuario(ResultSet rs) throws SQLException {
         Usuarios u = new Usuarios();
         u.setUsuarioID(rs.getInt("UsuarioID"));
@@ -191,11 +215,11 @@ public class UsuariosDAO {
         u.setCiudad(rs.getString("Ciudad"));
         u.setFecha_Registro(rs.getDate("Fecha_Registro"));
         u.setUsuario(rs.getString("Usuario"));
-        //u.setEstatus(rs.getString("Estatus"));
+        u.setEstatus(rs.getString("Estatus")); // DESCOMENTADO
         return u;
     }
 
-    //Método para obtener aquellos usuarios que son solo ADMIN
+    // Método para login
     public Usuarios login(String email, String contrasenia) throws SQLException {
         String sql = "SELECT UsuarioID, Nombre, ApellidoPat, ApellidoMat,"
                 + " Email, Contrasenia, Usuario, Estatus"
@@ -214,7 +238,7 @@ public class UsuariosDAO {
                         u.setApellidoPat(rs.getString("ApellidoPat"));
                         u.setApellidoMat(rs.getString("ApellidoMat"));
                         u.setEmail(rs.getString("Email"));
-                        u.setUsuario(rs.getString("Usuario"));    // Admin o Cliente
+                        u.setUsuario(rs.getString("Usuario"));
                         u.setEstatus(rs.getString("Estatus"));
                         return u;
                     }
@@ -224,4 +248,116 @@ public class UsuariosDAO {
         return null;
     }
 
+    // Método para eliminar usuario (eliminación lógica - soft delete)
+    public boolean eliminarUsuario(int usuarioId) {
+        String sql = "UPDATE Usuarios SET Estatus = 'Baja' WHERE UsuarioID = ?";
+
+        System.out.println("=== DEBUG UsuariosDAO ===");
+        System.out.println("DEBUG DAO: Eliminando usuario ID = " + usuarioId);
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, usuarioId);
+
+            int resultado = ps.executeUpdate();
+
+            if (resultado > 0) {
+                System.out.println("DEBUG DAO: Usuario eliminado exitosamente (estatus cambiado a 'Baja')");
+                return true;
+            } else {
+                System.out.println("DEBUG DAO: No se pudo eliminar el usuario - ID no encontrado");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR DAO: Exception en eliminarUsuario - " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Método alternativo si quieres mantener el método original también
+    public int eliminar(int id) {
+        // Llamar al nuevo método de eliminación lógica
+        return eliminarUsuario(id) ? 1 : 0;
+    }
+
+    // Método para listar solo usuarios activos (modificado)
+    public List<Usuarios> listarActivos() {
+        List<Usuarios> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Usuarios WHERE Estatus = 'Alta'";
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+        ) {
+            while (rs.next()) {
+                Usuarios u = mapUsuario(rs);
+                lista.add(u);
+            }
+            System.out.println("Usuarios activos encontrados: " + lista.size());
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+            System.err.println("Error al listar usuarios activos: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    // Método para restaurar un usuario eliminado
+    public boolean restaurarUsuario(int usuarioId) {
+        String sql = "UPDATE Usuarios SET Estatus = 'Alta' WHERE UsuarioID = ?";
+
+        System.out.println("DEBUG DAO: Restaurando usuario ID = " + usuarioId);
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, usuarioId);
+
+            int resultado = ps.executeUpdate();
+
+            if (resultado > 0) {
+                System.out.println("DEBUG DAO: Usuario restaurado exitosamente");
+                return true;
+            } else {
+                System.out.println("DEBUG DAO: No se pudo restaurar el usuario");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR DAO: Exception en restaurarUsuario - " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Método para listar usuarios eliminados (para administración)
+    public List<Usuarios> listarEliminados() {
+        List<Usuarios> lista = new ArrayList<>();
+        String sql = "SELECT * FROM Usuarios WHERE Estatus = 'Baja'";
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery();
+        ) {
+            while (rs.next()) {
+                Usuarios u = mapUsuario(rs);
+                lista.add(u);
+            }
+            System.out.println("Usuarios eliminados encontrados: " + lista.size());
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+            System.err.println("Error al listar usuarios eliminados: " + e.getMessage());
+        }
+        return lista;
+    }
 }

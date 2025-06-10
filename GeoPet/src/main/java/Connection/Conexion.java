@@ -5,11 +5,17 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Conexion {
-    // Parámetros de conexión
+    // Parámetros de conexión Isa
+    /*
     private final String url      = "jdbc:postgresql://localhost:5432/CreacionTablas";
     private final String usuario  = "postgres";
     private final String password = "mouse";
+    */
 
+    // Parámetros de conexión Othon
+    private final String url      = "jdbc:postgresql://localhost:5433/ProyectoDAW";
+    private final String usuario  = "postgres";
+    private final String password = "othon lozano 8";
     public Conexion() { }
 
     public Connection getConnection() {
