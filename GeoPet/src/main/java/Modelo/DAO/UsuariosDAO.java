@@ -360,4 +360,140 @@ public class UsuariosDAO {
         }
         return lista;
     }
+
+    // Agregar estos métodos al final de tu clase UsuariosDAO
+
+    /**
+     * Método específico para actualizar perfil de usuario (sin cambiar contraseña)
+     * Útil cuando el usuario edita su perfil pero no quiere cambiar la contraseña
+     */
+    public int actualizarPerfil(Usuarios u) {
+        int registros = 0;
+        String sql = """
+        UPDATE Usuarios SET 
+            Nombre=?, ApellidoPat=?, ApellidoMat=?, 
+            Email=?, Telefono=?, Direccion=?, Ciudad=?
+        WHERE UsuarioID=?
+        """;
+
+        System.out.println("DEBUG DAO: Actualizando perfil de usuario ID: " + u.getUsuarioID());
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, u.getNombre());
+            ps.setString(2, u.getApellidoPat());
+            ps.setString(3, u.getApellidoMat());
+            ps.setString(4, u.getEmail());
+            ps.setString(5, u.getTelefono());
+            ps.setString(6, u.getDireccion());
+            ps.setString(7, u.getCiudad());
+            ps.setInt(8, u.getUsuarioID());
+
+            registros = ps.executeUpdate();
+
+            if (registros > 0) {
+                System.out.println("DEBUG DAO: Perfil actualizado exitosamente");
+            } else {
+                System.out.println("DEBUG DAO: No se pudo actualizar el perfil");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+            System.err.println("Error al actualizar perfil: " + e.getMessage());
+        }
+        return registros;
+    }
+
+    /**
+     * Método para actualizar solo la contraseña del usuario
+     */
+    public boolean actualizarContrasenia(int usuarioId, String nuevaContrasenia) {
+        String sql = "UPDATE Usuarios SET Contrasenia = ? WHERE UsuarioID = ?";
+
+        System.out.println("DEBUG DAO: Actualizando contraseña para usuario ID: " + usuarioId);
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            // Hash de la nueva contraseña
+            String hashedPassword = BCrypt.hashpw(nuevaContrasenia, BCrypt.gensalt());
+
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, usuarioId);
+
+            int resultado = ps.executeUpdate();
+
+            if (resultado > 0) {
+                System.out.println("DEBUG DAO: Contraseña actualizada exitosamente");
+                return true;
+            } else {
+                System.out.println("DEBUG DAO: No se pudo actualizar la contraseña");
+                return false;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar contraseña: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Método para verificar si un email ya está en uso por otro usuario
+     * Útil para validar que no se duplique el email al editar perfil
+     */
+    public boolean emailExisteParaOtroUsuario(String email, int usuarioId) {
+        String sql = "SELECT COUNT(*) FROM Usuarios WHERE Email = ? AND UsuarioID != ? AND Estatus = 'Alta'";
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, email);
+            ps.setInt(2, usuarioId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al verificar email duplicado: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Método para validar la contraseña actual del usuario
+     * Útil para verificar la contraseña antes de permitir cambios
+     */
+    public boolean validarContraseniaActual(int usuarioId, String contraseniaActual) {
+        String sql = "SELECT Contrasenia FROM Usuarios WHERE UsuarioID = ?";
+
+        Conexion conexion = new Conexion();
+        try (
+                Connection conn = conexion.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, usuarioId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String hashedPassword = rs.getString("Contrasenia");
+                    return BCrypt.checkpw(contraseniaActual, hashedPassword);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al validar contraseña actual: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

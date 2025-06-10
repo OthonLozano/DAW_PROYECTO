@@ -40,7 +40,7 @@
             <i class="bi bi-person-circle me-1"></i>Mi Cuenta
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/perfil">
+            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/Usuario.jsp">
               <i class="bi bi-person me-1"></i>Mi Perfil</a></li>
             <li><a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/LogoutServlet">
               <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión</a></li>

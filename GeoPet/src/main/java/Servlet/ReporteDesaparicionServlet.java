@@ -354,7 +354,7 @@ public class ReporteDesaparicionServlet extends HttpServlet {
 
                     if (idParam == null || idParam.trim().isEmpty()) {
                         System.out.println("ERROR: ID de reporte no proporcionado");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=id_faltante");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=id_faltante");
                         return;
                     }
 
@@ -365,14 +365,7 @@ public class ReporteDesaparicionServlet extends HttpServlet {
                     ReporteDesaparicion reporteAEliminar = reporteDAO.buscarReporte(idEliminar);
                     if (reporteAEliminar == null || reporteAEliminar.getReporteID() == 0) {
                         System.out.println("ERROR: No se encontró el reporte con ID " + idEliminar);
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=reporte_no_encontrado");
-                        return;
-                    }
-
-                    // Verificar si el usuario actual es el propietario del reporte
-                    if (usuarioId != null && !usuarioId.equals(reporteAEliminar.getR_Usuario())) {
-                        System.out.println("ERROR: Usuario " + usuarioId + " no es propietario del reporte");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=no_autorizado");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=reporte_no_encontrado");
                         return;
                     }
 
@@ -381,19 +374,66 @@ public class ReporteDesaparicionServlet extends HttpServlet {
 
                     if (resultado) {
                         System.out.println("DEBUG: Reporte eliminado exitosamente");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&mensaje=eliminado");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&success=Reporte eliminado exitosamente");
                     } else {
                         System.out.println("ERROR: Fallo al eliminar el reporte");
-                        response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=eliminar_fallo");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=Error al eliminar el reporte");
                     }
 
                 } catch (NumberFormatException e) {
                     System.out.println("ERROR: ID de reporte no válido - " + e.getMessage());
-                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=id_invalido");
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=ID de reporte no válido");
                 } catch (Exception e) {
                     System.out.println("ERROR: Exception general en eliminar - " + e.getMessage());
                     e.printStackTrace();
-                    response.sendRedirect("ReporteDesaparicionServlet?accion=mis_reportes&error=general");
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=Error inesperado");
+                }
+                break;
+            }
+
+            case "restaurar": {
+                System.out.println("DEBUG: Caso restaurar reporte");
+
+                try {
+                    String idParam = request.getParameter("id");
+                    System.out.println("DEBUG: Parámetro ID recibido = " + idParam);
+
+                    if (idParam == null || idParam.trim().isEmpty()) {
+                        System.out.println("ERROR: ID de reporte no proporcionado");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=id_faltante");
+                        return;
+                    }
+
+                    int idRestaurar = Integer.parseInt(idParam);
+                    System.out.println("DEBUG: ID a restaurar = " + idRestaurar);
+
+                    // Verificar que el reporte existe
+                    ReporteDesaparicion reporteARestaurar = reporteDAO.buscarReporte(idRestaurar);
+                    if (reporteARestaurar == null || reporteARestaurar.getReporteID() == 0) {
+                        System.out.println("ERROR: No se encontró el reporte con ID " + idRestaurar);
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=reporte_no_encontrado");
+                        return;
+                    }
+
+                    // Actualizar el estado a "Alta"
+                    reporteARestaurar.setEstatus("Alta");
+                    boolean resultado = reporteDAO.modificarReporte(reporteARestaurar);
+
+                    if (resultado) {
+                        System.out.println("DEBUG: Reporte restaurado exitosamente");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&success=Reporte restaurado exitosamente");
+                    } else {
+                        System.out.println("ERROR: Fallo al restaurar el reporte");
+                        response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=Error al restaurar el reporte");
+                    }
+
+                } catch (NumberFormatException e) {
+                    System.out.println("ERROR: ID de reporte no válido - " + e.getMessage());
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=ID de reporte no válido");
+                } catch (Exception e) {
+                    System.out.println("ERROR: Exception general en restaurar - " + e.getMessage());
+                    e.printStackTrace();
+                    response.sendRedirect("ReporteDesaparicionServlet?accion=listar&error=Error inesperado");
                 }
                 break;
             }

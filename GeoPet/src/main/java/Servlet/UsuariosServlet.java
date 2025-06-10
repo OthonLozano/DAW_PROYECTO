@@ -2,6 +2,7 @@ package Servlet;
 
 import Modelo.DAO.UsuariosDAO;
 import Modelo.JavaBeans.Usuarios;
+import org.mindrot.jbcrypt.BCrypt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -35,6 +36,12 @@ public class UsuariosServlet extends HttpServlet {
                 break;
             case "restaurar":
                 restaurarUsuario(request, response);
+                break;
+            case "editar":
+                editarUsuario(request, response);
+                break;
+            case "nuevo":
+                mostrarFormularioNuevo(request, response);
                 break;
             default:
                 listarUsuarios(request, response);
@@ -75,8 +82,6 @@ public class UsuariosServlet extends HttpServlet {
             request.getRequestDispatcher("Vistas_JSP/Usuarios/listar_usuarios.jsp").forward(request, response);
         }
     }
-
-
 
     private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -156,6 +161,57 @@ public class UsuariosServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Nuevo método para manejar la edición desde el listado de usuarios (para administradores)
+     */
+    private void editarUsuario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String idParam = request.getParameter("id");
+        System.out.println("Cargando usuario para edición, ID: " + idParam);
+
+        if (idParam != null && !idParam.trim().isEmpty()) {
+            try {
+                int id = Integer.parseInt(idParam);
+                UsuariosDAO dao = new UsuariosDAO();
+                Usuarios usuario = dao.obtenerPorId(id);
+
+                if (usuario != null) {
+                    System.out.println("Usuario encontrado: " + usuario.getNombre() + " " + usuario.getApellidoPat());
+                    request.setAttribute("usuario", usuario);
+                    request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+                } else {
+                    System.out.println("Usuario no encontrado con ID: " + id);
+                    response.sendRedirect(request.getContextPath() +
+                            "/UsuariosServlet?accion=listar&error=Usuario no encontrado");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Error: ID inválido - " + e.getMessage());
+                response.sendRedirect(request.getContextPath() +
+                        "/UsuariosServlet?accion=listar&error=ID de usuario inválido");
+            } catch (Exception e) {
+                System.out.println("Error general al cargar usuario: " + e.getMessage());
+                e.printStackTrace();
+                response.sendRedirect(request.getContextPath() +
+                        "/UsuariosServlet?accion=listar&error=Error interno del servidor");
+            }
+        } else {
+            System.out.println("ID no proporcionado para edición");
+            response.sendRedirect(request.getContextPath() + "/UsuariosServlet?accion=listar");
+        }
+    }
+
+    /**
+     * Muestra el formulario para crear un nuevo usuario
+     */
+    private void mostrarFormularioNuevo(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        System.out.println("Mostrando formulario para nuevo usuario");
+        request.getRequestDispatcher("Vistas_JSP/Usuarios/registrar_usuarios.jsp").forward(request, response);
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -180,11 +236,17 @@ public class UsuariosServlet extends HttpServlet {
 
         // Validaciones básicas
         if (nombre == null || nombre.trim().isEmpty() ||
-                email == null || !email.contains("@") ||
-                contrasenia == null || contrasenia.length() < 6) {
+                email == null || !email.contains("@")) {
 
-            System.out.println("Validación fallida");
-            request.setAttribute("error", "Por favor, complete todos los campos obligatorios correctamente.");
+            System.out.println("Validación fallida - campos obligatorios");
+            String errorMsg = "Por favor, complete todos los campos obligatorios correctamente.";
+
+            // Si es nuevo usuario, la contraseña es obligatoria
+            if (esNuevo && (contrasenia == null || contrasenia.length() < 6)) {
+                errorMsg = "Por favor, complete todos los campos obligatorios. La contraseña debe tener al menos 6 caracteres.";
+            }
+
+            request.setAttribute("error", errorMsg);
             request.setAttribute("nombre", nombre);
             request.setAttribute("apellidoPat", apellidoPat);
             request.setAttribute("apellidoMat", apellidoMat);
@@ -193,13 +255,76 @@ public class UsuariosServlet extends HttpServlet {
             request.setAttribute("direccion", direccion);
             request.setAttribute("ciudad", ciudad);
 
-            String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Vistas_JSP/Usuarios/editar_usuario.jsp";
+            String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Usuario.jsp";
+
+            // Si es edición, necesitamos el objeto usuario completo
+            if (!esNuevo) {
+                try {
+                    UsuariosDAO dao = new UsuariosDAO();
+                    Usuarios usuario = dao.obtenerPorId(Integer.parseInt(idStr));
+                    if (usuario != null) {
+                        // Actualizar con los datos del formulario
+                        usuario.setNombre(nombre);
+                        usuario.setApellidoPat(apellidoPat);
+                        usuario.setApellidoMat(apellidoMat);
+                        usuario.setEmail(email);
+                        usuario.setTelefono(telefono);
+                        usuario.setDireccion(direccion);
+                        usuario.setCiudad(ciudad);
+                        request.setAttribute("usuario", usuario);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error al cargar usuario para validación: " + e.getMessage());
+                }
+            }
+
             request.getRequestDispatcher(jspDestino).forward(request, response);
             return;
         }
 
         try {
             Date now = new Date(System.currentTimeMillis());
+            UsuariosDAO dao = new UsuariosDAO();
+
+            // Validar email duplicado
+            if (esNuevo) {
+                // Para nuevo usuario, verificar que el email no exista
+                Usuarios usuarioExistente = dao.buscarPorEmail(email.trim());
+                if (usuarioExistente != null) {
+                    System.out.println("Email ya existe: " + email);
+                    request.setAttribute("error", "El email ya está registrado en el sistema.");
+                    request.setAttribute("nombre", nombre);
+                    request.setAttribute("apellidoPat", apellidoPat);
+                    request.setAttribute("apellidoMat", apellidoMat);
+                    request.setAttribute("telefono", telefono);
+                    request.setAttribute("direccion", direccion);
+                    request.setAttribute("ciudad", ciudad);
+                    request.getRequestDispatcher("Vistas_JSP/Usuarios/registrar_usuarios.jsp").forward(request, response);
+                    return;
+                }
+            } else {
+                // Para actualización, verificar que el email no esté siendo usado por otro usuario
+                if (dao.emailExisteParaOtroUsuario(email.trim(), Integer.parseInt(idStr))) {
+                    System.out.println("Email ya existe para otro usuario: " + email);
+                    request.setAttribute("error", "El email ya está siendo utilizado por otro usuario.");
+
+                    // Cargar el usuario actual para el formulario
+                    Usuarios usuario = dao.obtenerPorId(Integer.parseInt(idStr));
+                    if (usuario != null) {
+                        usuario.setNombre(nombre);
+                        usuario.setApellidoPat(apellidoPat);
+                        usuario.setApellidoMat(apellidoMat);
+                        usuario.setEmail(email);
+                        usuario.setTelefono(telefono);
+                        usuario.setDireccion(direccion);
+                        usuario.setCiudad(ciudad);
+                        request.setAttribute("usuario", usuario);
+                    }
+
+                    request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+                    return;
+                }
+            }
 
             // Crear el objeto Usuario
             Usuarios usuario = new Usuarios();
@@ -207,7 +332,6 @@ public class UsuariosServlet extends HttpServlet {
             usuario.setApellidoPat(apellidoPat != null ? apellidoPat.trim() : "");
             usuario.setApellidoMat(apellidoMat != null ? apellidoMat.trim() : "");
             usuario.setEmail(email.trim());
-            usuario.setContrasenia(contrasenia); // TODO: Hashear la contraseña con BCrypt
             usuario.setTelefono(telefono != null ? telefono.trim() : "");
             usuario.setDireccion(direccion != null ? direccion.trim() : "");
             usuario.setCiudad(ciudad != null ? ciudad.trim() : "");
@@ -215,12 +339,64 @@ public class UsuariosServlet extends HttpServlet {
             usuario.setUsuario("Cliente"); // Valor por defecto
             usuario.setEstatus("Alta"); // Valor por defecto
 
-            UsuariosDAO dao = new UsuariosDAO();
+            // Manejo de contraseñas
+            if (!esNuevo) {
+                // Para actualización
+                usuario.setUsuarioID(Integer.parseInt(idStr));
+
+                if (contrasenia != null && !contrasenia.trim().isEmpty()) {
+                    // Si se proporciona nueva contraseña, hashearla
+                    if (contrasenia.length() < 6) {
+                        System.out.println("Contraseña muy corta en actualización");
+                        request.setAttribute("error", "La nueva contraseña debe tener al menos 6 caracteres.");
+
+                        Usuarios usuarioActual = dao.obtenerPorId(Integer.parseInt(idStr));
+                        if (usuarioActual != null) {
+                            usuarioActual.setNombre(nombre);
+                            usuarioActual.setApellidoPat(apellidoPat);
+                            usuarioActual.setApellidoMat(apellidoMat);
+                            usuarioActual.setEmail(email);
+                            usuarioActual.setTelefono(telefono);
+                            usuarioActual.setDireccion(direccion);
+                            usuarioActual.setCiudad(ciudad);
+                            request.setAttribute("usuario", usuarioActual);
+                        }
+
+                        request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+                        return;
+                    }
+                    usuario.setContrasenia(hashearContrasenia(contrasenia));
+                } else {
+                    // Mantener la contraseña actual
+                    Usuarios usuarioActual = dao.obtenerPorId(Integer.parseInt(idStr));
+                    if (usuarioActual != null) {
+                        usuario.setContrasenia(usuarioActual.getContrasenia());
+                        usuario.setUsuario(usuarioActual.getUsuario()); // Mantener tipo de usuario
+                        usuario.setEstatus(usuarioActual.getEstatus()); // Mantener estatus
+                    }
+                }
+            } else {
+                // Para nuevo usuario, siempre hashear la contraseña
+                if (contrasenia == null || contrasenia.length() < 6) {
+                    System.out.println("Contraseña requerida para nuevo usuario");
+                    request.setAttribute("error", "La contraseña es obligatoria y debe tener al menos 6 caracteres.");
+                    request.setAttribute("nombre", nombre);
+                    request.setAttribute("apellidoPat", apellidoPat);
+                    request.setAttribute("apellidoMat", apellidoMat);
+                    request.setAttribute("email", email);
+                    request.setAttribute("telefono", telefono);
+                    request.setAttribute("direccion", direccion);
+                    request.setAttribute("ciudad", ciudad);
+                    request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+                    return;
+                }
+                usuario.setContrasenia(hashearContrasenia(contrasenia));
+            }
+
             int resultado;
 
             if (!esNuevo) {
                 // Actualizar usuario existente
-                usuario.setUsuarioID(Integer.parseInt(idStr));
                 resultado = dao.actualizar(usuario);
                 System.out.println("Actualizando usuario ID: " + idStr + ", Resultado: " + resultado);
             } else {
@@ -238,9 +414,20 @@ public class UsuariosServlet extends HttpServlet {
                 System.out.println("Operación fallida: " + mensaje);
                 request.setAttribute("error", mensaje);
 
-                String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Vistas_JSP/Usuarios/editar_usuario.jsp";
+                String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Usuario.jsp";
+
+                // Para edición, cargar el usuario actual
+                if (!esNuevo) {
+                    request.setAttribute("usuario", usuario);
+                }
+
                 request.getRequestDispatcher(jspDestino).forward(request, response);
             }
+
+        } catch (NumberFormatException e) {
+            System.err.println("Error de formato en ID: " + e.getMessage());
+            request.setAttribute("error", "Error en el formato del ID de usuario.");
+            response.sendRedirect(request.getContextPath() + "/UsuariosServlet?accion=listar");
 
         } catch (Exception e) {
             System.err.println("Error al procesar usuario: " + e.getMessage());
@@ -248,8 +435,38 @@ public class UsuariosServlet extends HttpServlet {
 
             request.setAttribute("error", "Error interno del servidor: " + e.getMessage());
 
-            String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Vistas_JSP/Usuarios/editar_usuario.jsp";
+            String jspDestino = esNuevo ? "Vistas_JSP/Usuarios/registrar_usuarios.jsp" : "Usuario.jsp";
+
+            // Para edición, intentar cargar el usuario
+            if (!esNuevo && idStr != null) {
+                try {
+                    UsuariosDAO dao = new UsuariosDAO();
+                    Usuarios usuario = dao.obtenerPorId(Integer.parseInt(idStr));
+                    if (usuario != null) {
+                        request.setAttribute("usuario", usuario);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("Error adicional al cargar usuario: " + ex.getMessage());
+                }
+            }
+
             request.getRequestDispatcher(jspDestino).forward(request, response);
+        }
+    }
+
+    /**
+     * Método para hashear contraseñas usando BCrypt
+     */
+    private String hashearContrasenia(String contrasenia) {
+        try {
+            String hashed = BCrypt.hashpw(contrasenia, BCrypt.gensalt());
+            System.out.println("Contraseña hasheada exitosamente");
+            return hashed;
+        } catch (Exception e) {
+            System.err.println("Error al hashear contraseña: " + e.getMessage());
+            e.printStackTrace();
+            // En caso de error, devolver la contraseña sin hashear (no recomendado para producción)
+            return contrasenia;
         }
     }
 }

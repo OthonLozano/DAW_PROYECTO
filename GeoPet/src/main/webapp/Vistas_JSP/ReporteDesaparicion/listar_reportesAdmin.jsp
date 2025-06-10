@@ -20,6 +20,10 @@
             --accent-color: #fcbad3;
             --background-color: #f8f9fa;
             --text-color: #2c3e50;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
         }
         
         body {
@@ -88,15 +92,27 @@
             font-weight: 500;
             transition: all 0.3s ease;
             border: none;
+            margin: 0.2rem;
         }
 
         .btn-delete {
-            background-color: #ff6b6b;
+            background-color: var(--danger-color);
             color: white;
         }
 
         .btn-delete:hover {
-            background-color: #ff5252;
+            background-color: #c82333;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-restore {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-restore:hover {
+            background-color: #218838;
             color: white;
             transform: translateY(-2px);
         }
@@ -122,6 +138,31 @@
             border-radius: 10px;
             overflow: hidden;
         }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-alta {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-baja {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -132,6 +173,25 @@
             <h2><i class="fas fa-exclamation-triangle me-2"></i>Lista de Reportes</h2>
         </div>
         <div class="card-body">
+            <!-- Mensajes de éxito o error -->
+            <%
+                String success = request.getParameter("success");
+                String error = request.getParameter("error");
+                if (success != null) {
+            %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i> <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <% }
+                if (error != null) {
+            %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle"></i> <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <% } %>
+
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -140,6 +200,7 @@
                             <th>Especie</th>
                             <th>Fecha Desaparición</th>
                             <th>Ubicación</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -149,6 +210,7 @@
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                             if (reportes != null && !reportes.isEmpty()) {
                                 for (ReporteConRelaciones reporte : reportes) {
+                                    String estatus = reporte.getReporte().getEstatus() != null ? reporte.getReporte().getEstatus() : "Alta";
                         %>
                         <tr>
                             <td><%= reporte.getMascota().getNombre() %></td>
@@ -156,11 +218,24 @@
                             <td><%= sdf.format(reporte.getReporte().getFechaDesaparicion()) %></td>
                             <td><%= reporte.getReporte().getUbicacionUltimaVez() %></td>
                             <td>
+                                <span class="status-badge status-<%= estatus.toLowerCase() %>">
+                                    <%= estatus %>
+                                </span>
+                            </td>
+                            <td>
+                                <% if ("Alta".equals(estatus)) { %>
                                 <a href="ReporteDesaparicionServlet?accion=eliminar&id=<%= reporte.getReporte().getReporteID() %>"
                                    onclick="return confirm('¿Estás seguro de eliminar este reporte?');"
                                    class="btn btn-action btn-delete">
                                     <i class="fas fa-trash-alt me-1"></i>Eliminar
                                 </a>
+                                <% } else { %>
+                                <a href="ReporteDesaparicionServlet?accion=restaurar&id=<%= reporte.getReporte().getReporteID() %>"
+                                   onclick="return confirm('¿Estás seguro de restaurar este reporte?');"
+                                   class="btn btn-action btn-restore">
+                                    <i class="fas fa-undo me-1"></i>Restaurar
+                                </a>
+                                <% } %>
                             </td>
                         </tr>
                         <%
@@ -168,7 +243,11 @@
                             } else {
                         %>
                         <tr>
-                            <td colspan="5" class="text-center">No hay reportes registrados.</td>
+                            <td colspan="6" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No hay reportes registrados.
+                                </div>
+                            </td>
                         </tr>
                         <% } %>
                     </tbody>
@@ -186,5 +265,19 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Auto-ocultar alertas después de 5 segundos
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        });
+    });
+</script>
+
 </body>
 </html>
