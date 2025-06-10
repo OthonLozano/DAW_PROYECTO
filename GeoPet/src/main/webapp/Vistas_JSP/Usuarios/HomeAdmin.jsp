@@ -148,7 +148,7 @@
                         <i class="fas fa-users card-icon"></i>
                         <h3 class="card-title">Usuarios</h3>
                         <p class="card-text">Visualiza y gestiona todos los usuarios del sistema</p>
-                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/ver_usuarios.jsp" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/listar_usuarios.jsp" class="btn btn-primary">
                             <i class="fas fa-user-cog me-2"></i>Gestionar Usuarios
                         </a>
                     </div>
@@ -164,20 +164,6 @@
                         <p class="card-text">Accede a estadísticas y reportes del sistema</p>
                         <a href="${pageContext.request.contextPath}/Vistas_JSP/Reportes/reportes_globales.jsp" class="btn btn-primary">
                             <i class="fas fa-chart-bar me-2"></i>Ver Reportes
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gestión de Administradores -->
-            <div class="col-md-6 col-lg-3">
-                <div class="card h-100 p-4 text-center">
-                    <div class="card-body">
-                        <i class="fas fa-user-shield card-icon"></i>
-                        <h3 class="card-title">Administradores</h3>
-                        <p class="card-text">Administra los usuarios con rol de administrador</p>
-                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/gestionar_administradores.jsp" class="btn btn-primary">
-                            <i class="fas fa-user-lock me-2"></i>Gestionar Admins
                         </a>
                     </div>
                 </div>

@@ -1,14 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="Modelo.JavaBeans.Usuarios" %>
 <%@ page import="java.util.List" %>
-<%
-    // Verificar si el usuario está autenticado y es admin
-    Usuarios user = (Usuarios) session.getAttribute("usuario");
-    if (user == null || !"Admin".equals(user.getUsuario())) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp?error=Acceso+no+autorizado");
-        return;
-    }
-%>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,7 +28,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
@@ -77,6 +69,7 @@
             border: none;
             padding: 1rem;
             font-weight: 500;
+            white-space: nowrap;
         }
 
         .table tbody td {
@@ -157,20 +150,63 @@
         }
 
         .user-status {
-            padding: 0.25rem 0.75rem;
+            padding: 0.5rem 1rem;
             border-radius: 50px;
             font-size: 0.875rem;
             font-weight: 500;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
         }
 
         .status-active {
-            background-color: #d4edda;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
             color: #155724;
+            border: 2px solid #b8dacc;
         }
 
         .status-inactive {
-            background-color: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da, #f1b0b7);
             color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .user-id {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 50px;
+            display: inline-block;
+        }
+
+        .user-role {
+            background: linear-gradient(135deg, var(--accent-color), #ff9ff3);
+            color: var(--text-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .btn-action {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .user-status, .user-role {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
         }
     </style>
 </head>
@@ -191,8 +227,8 @@
                         <th>Email</th>
                         <th>Teléfono</th>
                         <th>Ciudad</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
+                        <%--                        <th>Rol</th>--%>
+                        <%--                        <th>Estado</th>--%>
                         <th>Acciones</th>
                     </tr>
                     </thead>
@@ -208,18 +244,13 @@
                         <td><%= u.getEmail() %></td>
                         <td><%= u.getTelefono() %></td>
                         <td><%= u.getCiudad() %></td>
-                        <td><%= u.getUsuario() %></td>
+
                         <td>
-                                <span class="user-status <%= "Alta".equals(u.getEstatus()) ? "status-active" : "status-inactive" %>">
-                                    <%= u.getEstatus() %>
-                                </span>
-                        </td>
-                        <td>
-                            <a href="ServletUsuario?accion=editar&id=<%= u.getUsuarioID() %>"
+                            <a href="<%= request.getContextPath() %>/UsuariosServlet?accion=editar&id=<%= u.getUsuarioID() %>"
                                class="btn btn-action btn-edit me-2">
                                 <i class="fas fa-edit me-1"></i>Editar
                             </a>
-                            <a href="ServletUsuario?accion=eliminar&id=<%= u.getUsuarioID() %>"
+                            <a href="<%= request.getContextPath() %>/UsuariosServlet?accion=eliminar&id=<%= u.getUsuarioID() %>"
                                onclick="return confirm('¿Estás seguro de eliminar este usuario?');"
                                class="btn btn-action btn-delete">
                                 <i class="fas fa-trash-alt me-1"></i>Eliminar
@@ -239,10 +270,10 @@
             </div>
 
             <div class="d-flex justify-content-between mt-4">
-                <a href="HomeAdmin.jsp" class="btn btn-secondary">
+                <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Volver al Panel
                 </a>
-                <a href="RegistrarCliente.jsp" class="btn btn-primary">
+                <a href="<%= request.getContextPath() %>/Vistas_JSP/Usuarios/registrar_usuarios.jsp" class="btn btn-primary">
                     <i class="fas fa-user-plus"></i> Registrar Nuevo Usuario
                 </a>
             </div>

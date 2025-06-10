@@ -18,7 +18,7 @@
             --background-color: #f8f9fa;
             --text-color: #2c3e50;
         }
-        
+
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -143,12 +143,13 @@
                     String tipo = (String) request.getAttribute("tipo");
                     String alertClass = tipo.equals("success") ? "alert-success" : "alert-danger";
             %>
-                <div class="alert <%= alertClass %>" role="alert">
-                    <%= mensaje %>
-                </div>
+            <div class="alert <%= alertClass %>" role="alert">
+                <%= mensaje %>
+            </div>
             <% } %>
 
-            <form action="EspecieServlet" method="post">
+            <form action="${pageContext.request.contextPath}/EspecieServlet" method="post">
+                <input type="hidden" name="accion" value="registrar"/>
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre de la especie" required>
                     <label for="nombre"><i class="fas fa-tag me-2"></i>Nombre de la especie</label>
@@ -160,7 +161,7 @@
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="EspecieServlet?accion=listar" class="btn btn-secondary">
+                    <a href="${pageContext.request.contextPath}/EspecieServlet?accion=listar" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Volver a la Lista
                     </a>
                     <button type="submit" class="btn btn-primary">
