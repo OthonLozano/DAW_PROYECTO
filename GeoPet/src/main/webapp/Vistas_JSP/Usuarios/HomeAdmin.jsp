@@ -162,7 +162,7 @@
                         <i class="fas fa-chart-line card-icon"></i>
                         <h3 class="card-title">Reportes</h3>
                         <p class="card-text">Accede a estadísticas y reportes del sistema</p>
-                        <a href="${pageContext.request.contextPath}/Vistas_JSP/Reportes/reportes_globales.jsp" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/Vistas_JSP/ReportesDesaparicion/listar_reportesAdmin.jsp" class="btn btn-primary">
                             <i class="fas fa-chart-bar me-2"></i>Ver Reportes
                         </a>
                     </div>
