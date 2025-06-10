@@ -460,9 +460,11 @@
     <div class="reporte-card">
       <div class="imagen-container">
         <% if (reporteRel.tieneImagen()) { %>
-        <img src="<%= request.getContextPath() %>/<%= imagen.getURL_Imagen() %>"
+        <!-- ✅ IMAGEN CORREGIDA: Usar ImagenMascotaServlet -->
+        <img src="<%= request.getContextPath() %>/ImagenMascotaServlet?action=obtener&mascotaId=<%= mascota.getMascotaID() %>"
              alt="Foto de <%= mascota.getNombre() %>"
-             class="mascota-imagen">
+             class="mascota-imagen"
+             onerror="this.parentElement.innerHTML='<div class=\'imagen-placeholder\'>🐾</div>';">
         <% } else { %>
         <div class="imagen-placeholder">
           🐾

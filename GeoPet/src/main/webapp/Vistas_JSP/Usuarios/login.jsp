@@ -7,9 +7,6 @@
         String rol = user.getUsuario();  // "SuperAdmin", "Admin" o "Cliente"
         String ctx = request.getContextPath();
         switch (rol) {
-            case "SuperAdmin":
-                response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeSuperAdmin.jsp");
-                break;
             case "Admin":
                 response.sendRedirect(ctx + "/Vistas_JSP/Usuarios/HomeAdmin.jsp");
                 break;

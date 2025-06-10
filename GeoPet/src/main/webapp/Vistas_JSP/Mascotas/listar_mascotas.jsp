@@ -10,100 +10,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Mascotas - GeoPet</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
+            background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            padding: 20px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .mensaje {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .mensaje.exito {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .mensaje.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .acciones-principales {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            margin: 0 10px;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
+        .main-header {
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
             color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #545b62;
-        }
-
-        .mascotas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
         }
 
         .mascota-card {
-            background: white;
+            border: none;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.3s ease;
+            height: 100%;
         }
 
         .mascota-card:hover {
@@ -113,7 +44,7 @@
 
         .imagen-container {
             position: relative;
-            height: 200px;
+            height: 220px;
             overflow: hidden;
         }
 
@@ -136,32 +67,33 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 48px;
+            font-size: 3rem;
         }
 
         .estado-badge {
             position: absolute;
             top: 10px;
             right: 10px;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: bold;
             text-transform: uppercase;
+            backdrop-filter: blur(10px);
         }
 
         .estado-perdido {
-            background-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.9);
             color: white;
         }
 
         .estado-encontrado {
-            background-color: #28a745;
+            background-color: rgba(40, 167, 69, 0.9);
             color: white;
         }
 
         .estado-en-casa {
-            background-color: #17a2b8;
+            background-color: rgba(23, 162, 184, 0.9);
             color: white;
         }
 
@@ -169,181 +101,157 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
         }
 
         .sexo-macho {
-            background-color: #007bff;
+            background-color: rgba(0, 123, 255, 0.9);
             color: white;
         }
 
         .sexo-hembra {
-            background-color: #e83e8c;
+            background-color: rgba(232, 62, 140, 0.9);
             color: white;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .mascota-nombre {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .mascota-especie {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-
-        .mascota-info {
-            margin-bottom: 15px;
-        }
-
-        .info-item {
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .info-label {
-            font-weight: bold;
-            color: #555;
-        }
-
-        .info-value {
-            color: #333;
         }
 
         .caracteristicas {
             background-color: #f8f9fa;
-            padding: 10px;
+            padding: 0.75rem;
             border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
             line-height: 1.4;
-            color: #555;
+            color: #6c757d;
         }
 
-        .card-actions {
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-        }
-
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 14px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
+        .btn-action {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
             transition: all 0.3s ease;
-            flex: 1;
-            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-edit {
             background-color: #ffc107;
             color: #212529;
+            border: none;
         }
 
         .btn-edit:hover {
             background-color: #e0a800;
+            color: #212529;
+            transform: translateY(-1px);
         }
 
         .btn-delete {
             background-color: #dc3545;
             color: white;
+            border: none;
         }
 
         .btn-delete:hover {
             background-color: #c82333;
+            color: white;
+            transform: translateY(-1px);
         }
 
         .btn-photos {
             background-color: #17a2b8;
             color: white;
+            border: none;
         }
 
         .btn-photos:hover {
             background-color: #138496;
+            color: white;
+            transform: translateY(-1px);
         }
 
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
-            color: #666;
+            padding: 4rem 2rem;
+            color: #6c757d;
         }
 
         .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
             opacity: 0.5;
         }
 
-        .empty-state h3 {
-            margin-bottom: 10px;
-            color: #555;
+        .info-item {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
         }
 
-        .empty-state p {
-            margin-bottom: 30px;
-            font-size: 16px;
+        .info-label {
+            font-weight: 600;
+            color: #495057;
         }
 
-        @media (max-width: 768px) {
-            .mascotas-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+        .mascota-nombre {
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
 
-            .acciones-principales {
-                margin-bottom: 20px;
-            }
-
-            .btn {
-                display: block;
-                margin: 10px 0;
-            }
+        .mascota-especie {
+            color: #6c757d;
+            font-style: italic;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>🐾 Mis Mascotas</h1>
-        <p>Administra la información de tus queridas mascotas</p>
+<!-- Header principal -->
+<div class="main-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-heart-fill me-3"></i>Mis Mascotas
+                </h1>
+                <p class="lead mb-0">Administra la información de tus queridas mascotas</p>
+            </div>
+        </div>
     </div>
+</div>
 
+<div class="container">
     <!-- Mostrar mensajes -->
     <%
         String mensaje = (String) request.getAttribute("mensaje");
         if (mensaje != null) {
     %>
-    <div class="mensaje <%= mensaje.contains("Error") ? "error" : "exito" %>">
+    <div class="alert <%= mensaje.contains("Error") ? "alert-danger" : "alert-success" %> alert-dismissible fade show" role="alert">
+        <i class="<%= mensaje.contains("Error") ? "bi bi-exclamation-triangle-fill" : "bi bi-check-circle-fill" %> me-2"></i>
         <%= mensaje %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     <% } %>
 
     <!-- Acciones principales -->
-    <div class="acciones-principales">
-        <a href="MascotaServlet?accion=registrar" class="btn btn-primary">
-            ➕ Registrar Nueva Mascota
-        </a>
-        <a href="/GeoPet_war_exploded/Vistas_JSP/Usuarios/HomeCliente.jsp" class="btn btn-secondary">
-            🏠 Ir al Inicio
-        </a>
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <a href="MascotaServlet?accion=registrar" class="btn btn-success btn-lg me-3">
+                <i class="bi bi-plus-circle me-2"></i>Registrar Nueva Mascota
+            </a>
+            <a href="/GeoPet_war_exploded/Vistas_JSP/Usuarios/HomeCliente.jsp" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-house me-2"></i>Ir al Inicio
+            </a>
+        </div>
     </div>
 
     <!-- Grid de mascotas -->
@@ -351,7 +259,7 @@
         List<MascotaConRelaciones> mascotasRel = (List<MascotaConRelaciones>) request.getAttribute("mascotasConRelaciones");
         if (mascotasRel != null && !mascotasRel.isEmpty()) {
     %>
-    <div class="mascotas-grid">
+    <div class="row g-4">
         <%
             for (MascotaConRelaciones mascotaRel : mascotasRel) {
                 Mascotas mascota = mascotaRel.getMascota();
@@ -379,73 +287,76 @@
                 } else {
                     estadoClass = "estado-en-casa";
                 }
+
+                // URL de la imagen corregida
+                String urlImagen = request.getContextPath() + "/ImagenMascotaServlet?action=obtener&mascotaId=" + mascota.getMascotaID();
         %>
-        <div class="mascota-card">
-            <div class="imagen-container">
-                <% if (mascotaRel.tieneImagen()) { %>
-                <img src="<%= request.getContextPath() %>/<%= imagen.getURL_Imagen() %>"
-                     alt="Foto de <%= mascota.getNombre() %>"
-                     class="mascota-imagen">
-                <% } else { %>
-                <div class="imagen-placeholder">
-                    🐾
-                </div>
-                <% } %>
-
-                <!-- Ícono de sexo -->
-                <% if (!sexoIcon.isEmpty()) { %>
-                <div class="sexo-icon <%= sexoClass %>">
-                    <%= sexoIcon %>
-                </div>
-                <% } %>
-
-                <!-- Badge de estado -->
-                <div class="estado-badge <%= estadoClass %>">
-                    <%= estadoTexto %>
-                </div>
-            </div>
-
-            <div class="card-body">
-                <h3 class="mascota-nombre"><%= mascota.getNombre() %></h3>
-                <p class="mascota-especie"><%= especie.getNombre() %></p>
-
-                <div class="mascota-info">
-                    <div class="info-item">
-                        <span class="info-label">Edad:</span>
-                        <span class="info-value"><%= mascota.getEdad() %> meses </span>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card mascota-card">
+                <div class="imagen-container">
+                    <% if (mascotaRel.tieneImagen()) { %>
+                    <img src="<%= urlImagen %>"
+                         alt="Foto de <%= mascota.getNombre() %>"
+                         class="mascota-imagen"
+                         data-mascota-id="<%= mascota.getMascotaID() %>"
+                         onerror="this.parentElement.innerHTML='<div class=\'imagen-placeholder\'><i class=\'bi bi-image\' style=\'font-size: 3rem;\'></i></div>';">
+                    <% } else { %>
+                    <div class="imagen-placeholder">
+                        <i class="bi bi-camera" style="font-size: 3rem;"></i>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Color:</span>
-                        <span class="info-value"><%= mascota.getColor() %></span>
+                    <% } %>
+
+                    <!-- Ícono de sexo -->
+                    <% if (!sexoIcon.isEmpty()) { %>
+                    <div class="sexo-icon <%= sexoClass %>">
+                        <%= sexoIcon %>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Sexo:</span>
-                        <span class="info-value"><%= mascota.getSexo() %></span>
+                    <% } %>
+
+                    <!-- Badge de estado -->
+                    <div class="estado-badge <%= estadoClass %>">
+                        <%= estadoTexto %>
                     </div>
                 </div>
 
-                <% if (mascota.getCaracteristicasDistintivas() != null &&
-                        !mascota.getCaracteristicasDistintivas().trim().isEmpty()) { %>
-                <div class="caracteristicas">
-                    <strong>Características distintivas:</strong><br>
-                    <%= mascota.getCaracteristicasDistintivas() %>
-                </div>
-                <% } %>
+                <div class="card-body">
+                    <h5 class="mascota-nombre"><%= mascota.getNombre() %></h5>
+                    <p class="mascota-especie"><%= especie.getNombre() %></p>
 
-                <div class="card-actions">
-                    <a href="MascotaServlet?accion=editar&id=<%= mascota.getMascotaID() %>"
-                       class="btn-sm btn-edit">
-                        ✏️ Editar
-                    </a>
-                    <a href="Vistas_JSP/Mascotas/imagen_mascota_focused.jsp?mascotaId=<%= mascota.getMascotaID() %>&action=subir&nombre=<%= mascota.getNombre() %>"
-                       class="btn-sm btn-photos">
-                        📷 Fotos
-                    </a>
-                    <a href="MascotaServlet?accion=eliminar&id=<%= mascota.getMascotaID() %>"
-                       class="btn-sm btn-delete"
-                       onclick="return confirm('¿Estás seguro de eliminar a <%= mascota.getNombre() %>?');">
-                        🗑️ Eliminar
-                    </a>
+                    <div class="mascota-info mb-3">
+                        <div class="info-item">
+                            <span class="info-label">Edad:</span>
+                            <span class="text-muted"><%= mascota.getEdad() %> meses</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Color:</span>
+                            <span class="text-muted"><%= mascota.getColor() %></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Sexo:</span>
+                            <span class="text-muted"><%= mascota.getSexo() %></span>
+                        </div>
+                    </div>
+
+                    <% if (mascota.getCaracteristicasDistintivas() != null &&
+                            !mascota.getCaracteristicasDistintivas().trim().isEmpty()) { %>
+                    <div class="caracteristicas">
+                        <strong>Características distintivas:</strong><br>
+                        <%= mascota.getCaracteristicasDistintivas() %>
+                    </div>
+                    <% } %>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="MascotaServlet?accion=editar&id=<%= mascota.getMascotaID() %>"
+                           class="btn btn-action btn-edit flex-fill">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a href="MascotaServlet?accion=eliminar&id=<%= mascota.getMascotaID() %>"
+                           class="btn btn-action btn-delete flex-fill"
+                           onclick="return confirm('¿Estás seguro de eliminar a <%= mascota.getNombre() %>?');">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -454,14 +365,19 @@
     <% } else { %>
     <!-- Estado vacío -->
     <div class="empty-state">
-        <div class="empty-state-icon">🐾</div>
-        <h3>No tienes mascotas registradas</h3>
-        <p>¡Comienza registrando tu primera mascota!</p>
-        <a href="MascotaServlet?accion=registrar" class="btn btn-primary">
-            ➕ Registrar Mi Primera Mascota
+        <div class="empty-state-icon">
+            <i class="bi bi-heart"></i>
+        </div>
+        <h3 class="mb-3">No tienes mascotas registradas</h3>
+        <p class="mb-4">¡Comienza registrando tu primera mascota!</p>
+        <a href="MascotaServlet?accion=registrar" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle me-2"></i>Registrar Mi Primera Mascota
         </a>
     </div>
     <% } %>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -10,17 +10,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8156da8f-2a88-44b6-bd0b-cef225f98158" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/postgresql/CreacionTablas.sql" beforeDir="false" afterPath="$PROJECT_DIR$/postgresql/CreacionTablas.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Connection/Conexion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/MascotasDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Modelo/DAO/ReporteDesaparicionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/ReporteDesaparicionServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/ImagenMascotaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/ImagenMascotaServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Servlet/LoginServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/editar_mascotas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/editar_mascotas.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/imagen_mascota_focused.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/imagen_mascota_focused.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/listar_mascotas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/listar_mascotas.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/registrar_mascotas.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Mascotas/registrar_mascotas.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/editar_reportedesaparicion.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/registrar_reportedesaparicion.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/ReporteDesaparicion/mis_reportes.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/HomeSuperAdmin.jsp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/Vistas_JSP/Usuarios/login.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/index.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/login.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/login.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,8 +32,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jsp File" />
         <option value="Class" />
+        <option value="Jsp File" />
       </list>
     </option>
   </component>
@@ -166,7 +168,7 @@
       <workItem from="1747118455598" duration="414000" />
       <workItem from="1747531447137" duration="7535000" />
       <workItem from="1749502065273" duration="2551000" />
-      <workItem from="1749505050773" duration="992000" />
+      <workItem from="1749505050773" duration="5040000" />
     </task>
     <servers />
   </component>

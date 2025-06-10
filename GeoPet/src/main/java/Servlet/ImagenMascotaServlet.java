@@ -11,11 +11,10 @@ import jakarta.servlet.http.Part;
 import Modelo.DAO.ImagenMascotaDAO;
 import Modelo.JavaBeans.ImagenMascota;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @WebServlet(name = "ImagenMascotaServlet", urlPatterns = {"/ImagenMascotaServlet"})
 @MultipartConfig(
@@ -34,13 +33,166 @@ public class ImagenMascotaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Test endpoint para verificar que el servlet funciona
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
+        System.out.println("=== DEBUG ImagenMascotaServlet: doGet ejecutado ===");
 
-        PrintWriter out = response.getWriter();
-        out.print("{\"exito\": true, \"mensaje\": \"Servlet funcionando correctamente\"}");
-        out.flush();
+        String action = request.getParameter("action");
+        System.out.println("DEBUG: Action recibida en GET = " + action);
+
+        if ("obtener".equals(action)) {
+            obtenerImagen(request, response);
+        } else {
+            // Test endpoint para verificar que el servlet funciona
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            PrintWriter out = response.getWriter();
+            out.print("{\"exito\": true, \"mensaje\": \"Servlet funcionando correctamente\"}");
+            out.flush();
+        }
+    }
+
+    private void obtenerImagen(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String mascotaIdStr = request.getParameter("mascotaId");
+
+        System.out.println("=== DEBUG OBTENER IMAGEN ===");
+        System.out.println("DEBUG: Parámetro mascotaId recibido: " + mascotaIdStr);
+
+        if (mascotaIdStr == null || mascotaIdStr.trim().isEmpty()) {
+            System.out.println("ERROR: mascotaId es null o vacío");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de mascota requerido");
+            return;
+        }
+
+        try {
+            int mascotaId = Integer.parseInt(mascotaIdStr.trim());
+            System.out.println("DEBUG: mascotaId parseado: " + mascotaId);
+
+            // Obtener las imágenes de la mascota usando tu método existente
+            List<ImagenMascota> imagenes = imagenDAO.listarImagenesPorMascota(mascotaId);
+            System.out.println("DEBUG: Número de imágenes encontradas: " +
+                    (imagenes != null ? imagenes.size() : 0));
+
+            if (imagenes == null || imagenes.isEmpty()) {
+                System.out.println("WARNING: No se encontraron imágenes para la mascota " + mascotaId);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontraron imágenes");
+                return;
+            }
+
+            // Usar la primera imagen encontrada
+            ImagenMascota imagen = imagenes.get(0);
+            String rutaImagen = imagen.getURL_Imagen();
+            System.out.println("DEBUG: Ruta de imagen obtenida: " + rutaImagen);
+
+            // Construir la ruta completa del archivo
+            String applicationPath = getServletContext().getRealPath("");
+            String rutaCompleta = applicationPath + File.separator + rutaImagen;
+            System.out.println("DEBUG: Application path: " + applicationPath);
+            System.out.println("DEBUG: Ruta completa del archivo: " + rutaCompleta);
+
+            File archivoImagen = new File(rutaCompleta);
+            System.out.println("DEBUG: ¿Archivo existe? " + archivoImagen.exists());
+            System.out.println("DEBUG: ¿Es archivo? " + archivoImagen.isFile());
+            System.out.println("DEBUG: Tamaño del archivo: " + archivoImagen.length() + " bytes");
+            System.out.println("DEBUG: Ruta absoluta: " + archivoImagen.getAbsolutePath());
+
+            if (!archivoImagen.exists() || !archivoImagen.isFile()) {
+                System.out.println("ERROR: El archivo de imagen no existe: " + rutaCompleta);
+
+                // Intentar con diferentes variaciones de la ruta
+                String[] rutasAlternativas = {
+                        applicationPath + rutaImagen,                    // sin File.separator
+                        applicationPath + "/" + rutaImagen,             // con /
+                        applicationPath + "\\" + rutaImagen,            // con \
+                        rutaImagen                                      // ruta tal como está
+                };
+
+                System.out.println("DEBUG: Probando rutas alternativas...");
+                boolean encontrado = false;
+                for (String rutaAlt : rutasAlternativas) {
+                    File archivoAlt = new File(rutaAlt);
+                    System.out.println("DEBUG: Probando: " + rutaAlt + " -> Existe: " + archivoAlt.exists());
+                    if (archivoAlt.exists() && archivoAlt.isFile()) {
+                        archivoImagen = archivoAlt;
+                        rutaCompleta = rutaAlt;
+                        encontrado = true;
+                        System.out.println("DEBUG: ✅ Archivo encontrado en: " + rutaAlt);
+                        break;
+                    }
+                }
+
+                if (!encontrado) {
+                    System.out.println("ERROR: No se pudo encontrar el archivo en ninguna ruta");
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "Archivo de imagen no encontrado");
+                    return;
+                }
+            }
+
+            // Determinar el tipo de contenido
+            String mimeType = getServletContext().getMimeType(archivoImagen.getName());
+            if (mimeType == null) {
+                String extension = rutaImagen.substring(rutaImagen.lastIndexOf('.') + 1).toLowerCase();
+                switch (extension) {
+                    case "jpg":
+                    case "jpeg":
+                        mimeType = "image/jpeg";
+                        break;
+                    case "png":
+                        mimeType = "image/png";
+                        break;
+                    case "gif":
+                        mimeType = "image/gif";
+                        break;
+                    case "webp":
+                        mimeType = "image/webp";
+                        break;
+                    default:
+                        mimeType = "application/octet-stream";
+                }
+            }
+
+            System.out.println("DEBUG: MIME type detectado: " + mimeType);
+
+            // Configurar la respuesta
+            response.setContentType(mimeType);
+            response.setContentLength((int) archivoImagen.length());
+
+            // Configurar headers para caché
+            response.setHeader("Cache-Control", "max-age=3600"); // 1 hora
+            response.setDateHeader("Last-Modified", archivoImagen.lastModified());
+
+            // Enviar el archivo
+            try (FileInputStream fileInputStream = new FileInputStream(archivoImagen);
+                 BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
+                 OutputStream outputStream = response.getOutputStream()) {
+
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                int totalBytes = 0;
+
+                while ((bytesRead = bufferedInputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                    totalBytes += bytesRead;
+                }
+
+                outputStream.flush();
+                System.out.println("DEBUG: ✅ Imagen enviada exitosamente. Bytes enviados: " + totalBytes);
+
+            } catch (IOException e) {
+                System.out.println("ERROR: Error al enviar la imagen: " + e.getMessage());
+                e.printStackTrace();
+                throw e;
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("ERROR: ID de mascota inválido: " + mascotaIdStr);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de mascota inválido");
+        } catch (Exception e) {
+            System.out.println("ERROR: Error inesperado al obtener imagen: " + e.getMessage());
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error interno del servidor");
+        }
     }
 
     @Override
