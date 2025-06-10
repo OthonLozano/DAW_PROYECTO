@@ -154,7 +154,7 @@
                             <td><%= reporte.getMascota().getNombre() %></td>
                             <td><%= reporte.getEspecie().getNombre() %></td>
                             <td><%= sdf.format(reporte.getReporte().getFechaDesaparicion()) %></td>
-                            <td><%= reporte.getReporte().getUbicacionUltimaVez() %></td>
+                            <td><%= reporte.getReporte().getUbicacion() %></td>
                             <td>
                                 <a href="ReporteDesaparicionServlet?accion=eliminar&id=<%= reporte.getReporte().getReporteID() %>"
                                    onclick="return confirm('¿Estás seguro de eliminar este reporte?');"
@@ -187,4 +187,4 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+</html> 

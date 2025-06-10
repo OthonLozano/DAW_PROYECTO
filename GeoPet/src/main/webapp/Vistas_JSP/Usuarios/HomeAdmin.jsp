@@ -127,7 +127,7 @@
             <p class="lead">Gestiona las especies, razas, usuarios y reportes del sistema</p>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
             <!-- Gestión de Especies -->
             <div class="col-md-6 col-lg-3">
                 <div class="card h-100 p-4 text-center">
@@ -162,7 +162,7 @@
                         <i class="fas fa-chart-line card-icon"></i>
                         <h3 class="card-title">Reportes</h3>
                         <p class="card-text">Accede a estadísticas y reportes del sistema</p>
-                        <a href="${pageContext.request.contextPath}/Vistas_JSP/ReportesDesaparicion/listar_reportesAdmin.jsp" class="btn btn-primary">
+                        <a href="${pageContext.request.contextPath}/ReporteDesaparicionServlet?accion=listar" class="btn btn-primary">
                             <i class="fas fa-chart-bar me-2"></i>Ver Reportes
                         </a>
                     </div>

@@ -118,6 +118,38 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(252, 186, 211, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(170, 150, 218, 0.3);
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-light">
@@ -195,9 +227,14 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-register mb-4">
-                                <i class="bi bi-person-plus me-2"></i>Registrarse
-                            </button>
+                            <div class="d-flex justify-content-between">
+                                <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/listar_usuarios.jsp" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Volver a la Lista
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Guardar Usuario
+                                </button>
+                            </div>
                         </form>
 
                         <!-- Mensajes de error o éxito - Solo se muestran cuando hay un evento -->

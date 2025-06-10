@@ -10,17 +10,39 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 
-@WebServlet("/ServletUsuario")
+@WebServlet("/UsuariosServlet")
 public class UsuariosServlet extends HttpServlet {
 
-    // Mostrar usuarios
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String accion = request.getParameter("accion");
+        
+        if (accion == null) {
+            accion = "listar";
+        }
+        
+        switch (accion) {
+            case "listar":
+                listarUsuarios(request, response);
+                break;
+            case "editar":
+                // TODO: Implementar edición
+                break;
+            case "eliminar":
+                // TODO: Implementar eliminación
+                break;
+            default:
+                listarUsuarios(request, response);
+                break;
+        }
+    }
 
-        List<Usuarios> usuarios = new UsuariosDAO().listar();  // Asegúrate de que 'Usuarios' esté bien referenciado
+    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<Usuarios> usuarios = new UsuariosDAO().listar();
         request.setAttribute("usuarios", usuarios);
-        request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+        request.getRequestDispatcher("Vistas_JSP/Usuarios/listar_usuarios.jsp").forward(request, response);
     }
 
     // Insertar nuevo usuario
@@ -43,7 +65,7 @@ public class UsuariosServlet extends HttpServlet {
         // Validaciones
         if (nombre == null || nombre.isEmpty() || email == null || !email.contains("@") || contrasenia == null || contrasenia.length() < 8) {
             request.setAttribute("error", "Datos inválidos.");
-            request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+            request.getRequestDispatcher("Vistas_JSP/Usuarios/registrar_usuarios.jsp").forward(request, response);
             return;
         }
 
@@ -61,7 +83,6 @@ public class UsuariosServlet extends HttpServlet {
         usuario.setCiudad(ciudad);
         usuario.setFecha_Registro(now);
         usuario.setUsuario("");  // Puedes asignar un valor por defecto o generar uno si es necesario
-        //usuario.setEstatus("");  // Puedes asignar un valor por defecto si es necesario
 
         // Guardar el usuario en la base de datos
         int resultado;
@@ -75,10 +96,10 @@ public class UsuariosServlet extends HttpServlet {
         }
 
         if (resultado > 0) {
-            response.sendRedirect("ServletUsuario");
+            response.sendRedirect(request.getContextPath() + "/UsuariosServlet?accion=listar");
         } else {
             request.setAttribute("error", "Error al guardar usuario.");
-            request.getRequestDispatcher("Usuario.jsp").forward(request, response);
+            request.getRequestDispatcher("Vistas_JSP/Usuarios/registrar_usuarios.jsp").forward(request, response);
         }
     }
 }

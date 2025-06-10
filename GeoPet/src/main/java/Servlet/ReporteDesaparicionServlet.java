@@ -5,6 +5,7 @@ import Modelo.DAO.MascotasDAO;
 import Modelo.JavaBeans.ReporteDesaparicion;
 import Modelo.JavaBeans.ReporteConRelaciones;
 import Modelo.JavaBeans.Mascotas;
+import Modelo.JavaBeans.Usuarios;
 
 import java.io.*;
 import jakarta.servlet.ServletException;
@@ -80,9 +81,19 @@ public class ReporteDesaparicionServlet extends HttpServlet {
 
                 System.out.println("DEBUG: Total reportes obtenidos = " + (listaReportes != null ? listaReportes.size() : "NULL"));
 
-                request.setAttribute("reportesCompletos", listaReportes);
-                request.setAttribute("usuarioLogueado", usuarioId != null); // Para el JSP
-                request.getRequestDispatcher("Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp").forward(request, response);
+                // Verificar si el usuario es administrador
+                Usuarios usuario = (Usuarios) session.getAttribute("usuario");
+                System.out.println("DEBUG: Usuario actual = " + (usuario != null ? usuario.getUsuario() : "null"));
+
+                if (usuario != null && "Admin".equals(usuario.getUsuario())) {
+                    System.out.println("DEBUG: Redirigiendo a vista de administrador");
+                    request.setAttribute("reportes", listaReportes);
+                    request.getRequestDispatcher("/Vistas_JSP/ReporteDesaparicion/listar_reportesAdmin.jsp").forward(request, response);
+                } else {
+                    System.out.println("DEBUG: Redirigiendo a vista normal");
+                    request.setAttribute("reportesCompletos", listaReportes);
+                    request.getRequestDispatcher("/Vistas_JSP/ReporteDesaparicion/listar_reportedesaparicion.jsp").forward(request, response);
+                }
                 break;
 
             case "registrar":
