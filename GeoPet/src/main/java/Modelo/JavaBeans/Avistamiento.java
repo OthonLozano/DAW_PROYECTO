@@ -15,6 +15,7 @@ public class Avistamiento implements Serializable {
     private String Contacto;
     private Date Fecha_Registro;
     private int R_Imagen;
+    private String estatus;
 
     public Avistamiento() {
     }
@@ -89,5 +90,13 @@ public class Avistamiento implements Serializable {
 
     public void setAvistamientoID(int avistamientoID) {
         AvistamientoID = avistamientoID;
+    }
+
+    public String getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
     }
 }
