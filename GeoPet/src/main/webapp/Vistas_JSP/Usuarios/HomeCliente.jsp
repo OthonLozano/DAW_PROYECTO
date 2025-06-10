@@ -76,37 +76,6 @@
             </div>
         </div>
 
-        <!-- Additional Options -->
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="geopet-card h-100">
-                    <div class="geopet-card-header">
-                        <h3><i class="fas fa-map-marked-alt me-2"></i>Avistamientos</h3>
-                    </div>
-                    <div class="geopet-card-body">
-                        <a href="${pageContext.request.contextPath}/AvistamientoServlet?accion=listar" class="btn btn-geopet-primary mb-3">
-                            <i class="fas fa-search me-2"></i>Buscar Avistamientos
-                        </a>
-                        <p class="small text-muted">Explora los avistamientos reportados en tu área.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="geopet-card h-100">
-                    <div class="geopet-card-header">
-                        <h3><i class="fas fa-comments me-2"></i>Comentarios</h3>
-                    </div>
-                    <div class="geopet-card-body">
-                        <a href="${pageContext.request.contextPath}/ComentarioServlet?accion=misComentarios" class="btn btn-geopet-secondary mb-3">
-                            <i class="fas fa-comment me-2"></i>Mis Comentarios
-                        </a>
-                        <p class="small text-muted">Revisa tus comentarios en reportes.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Logout Section -->
         <div class="text-center mt-5">
             <form action="${pageContext.request.contextPath}/LogoutServlet" method="post">

@@ -10,6 +10,7 @@ public class Comentarios implements Serializable {
     private int R_Reporte;
     private String Contenido;
     private Date Fecha_Comentario;
+    private String estatus;
 
     public Comentarios() {
     }
@@ -52,5 +53,13 @@ public class Comentarios implements Serializable {
 
     public void setFecha_Comentario(Date fecha_Comentario) {
         Fecha_Comentario = fecha_Comentario;
+    }
+
+    public String getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
     }
 }

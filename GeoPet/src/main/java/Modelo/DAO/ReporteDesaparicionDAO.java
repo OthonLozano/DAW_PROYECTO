@@ -486,4 +486,116 @@ public class ReporteDesaparicionDAO {
 
         return null;
     }
+
+    /**
+     * Obtiene un reporte específico con todas sus relaciones (mascota, usuario, especie, imagen)
+     */
+    public ReporteConRelaciones obtenerReporteCompleto(int reporteId) {
+        ReporteConRelaciones reporteCompleto = null;
+
+        String sql = "SELECT " +
+                "r.reporteid, r.r_usuario, r.r_mascota, r.fechadesaparicion, " +
+                "r.ubicacionultimavez, r.descripcionsituacion, r.recompensa, " +
+                "r.estadoreporte, r.fecha_registro, r.estatus, " +
+                "u.usuarioid, u.nombre as usuario_nombre, u.apellidopat, u.apellidomat, " +
+                "u.telefono, u.email, u.direccion, u.ciudad, " +
+                "m.mascotaid, m.nombre as mascota_nombre, m.edad, m.sexo, m.color, " +
+                "m.caracteristicasdistintivas, m.microchip, m.numero_microchip, m.estado as estado_mascota, m.r_especie, " +
+                "e.especieid, e.nombre as especie_nombre, e.descripcion as especie_descripcion, " +
+                "i.imagenid, i.url_imagen " +
+                "FROM reportedesaparicion r " +
+                "INNER JOIN usuarios u ON r.r_usuario = u.usuarioid " +
+                "INNER JOIN mascotas m ON r.r_mascota = m.mascotaid " +
+                "LEFT JOIN especie e ON m.r_especie = e.especieid " +
+                "LEFT JOIN imagenmascota i ON m.mascotaid = i.r_mascota " +
+                "WHERE r.reporteid = ? AND r.estatus = 'Alta'";
+
+        System.out.println("DEBUG DAO: Buscando reporte completo con ID = " + reporteId);
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, reporteId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                System.out.println("DEBUG DAO: Reporte encontrado, construyendo objeto completo");
+
+                // Crear el reporte
+                ReporteDesaparicion reporte = new ReporteDesaparicion();
+                reporte.setReporteID(rs.getInt("reporteid"));
+                reporte.setR_Usuario(rs.getInt("r_usuario"));
+                reporte.setR_Mascota(rs.getInt("r_mascota"));
+                reporte.setFechaDesaparicion(rs.getDate("fechadesaparicion"));
+                reporte.setUbicacionUltimaVez(rs.getString("ubicacionultimavez"));
+                reporte.setDescripcionSituacion(rs.getString("descripcionsituacion"));
+                reporte.setRecompensa(rs.getDouble("recompensa"));
+                reporte.setEstadoReporte(rs.getString("estadoreporte"));
+                reporte.setFecha_Registro(rs.getDate("fecha_registro"));
+                reporte.setEstatus(rs.getString("estatus"));
+
+                // Crear la mascota
+                Mascotas mascota = new Mascotas();
+                mascota.setMascotaID(rs.getInt("mascotaid"));
+                mascota.setR_Usuario(rs.getInt("r_usuario"));
+                mascota.setR_Especie(rs.getInt("r_especie")); // ← AHORA SÍ ESTÁ EN EL SELECT
+                mascota.setNombre(rs.getString("mascota_nombre"));
+                mascota.setEdad(rs.getInt("edad"));
+                mascota.setColor(rs.getString("color"));
+                mascota.setSexo(rs.getString("sexo"));
+                mascota.setCaracteristicasDistintivas(rs.getString("caracteristicasdistintivas"));
+                mascota.setMicrochip(rs.getBoolean("microchip"));
+                mascota.setNumero_Microchip(rs.getInt("numero_microchip"));
+                mascota.setEstado(rs.getString("estado_mascota"));
+
+                // Crear el usuario
+                Usuarios usuario = new Usuarios();
+                usuario.setUsuarioID(rs.getInt("usuarioid"));
+                usuario.setNombre(rs.getString("usuario_nombre"));
+                usuario.setApellidoPat(rs.getString("apellidopat"));
+                usuario.setApellidoMat(rs.getString("apellidomat"));
+                usuario.setTelefono(rs.getString("telefono"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setDireccion(rs.getString("direccion"));
+                usuario.setCiudad(rs.getString("ciudad"));
+
+                // Crear la especie (puede ser null)
+                Especie especie = null;
+                if (rs.getObject("especieid") != null && rs.getInt("especieid") > 0) {
+                    especie = new Especie();
+                    especie.setEspecieID(rs.getInt("especieid"));
+                    especie.setNombre(rs.getString("especie_nombre"));
+                    especie.setDescripcion(rs.getString("especie_descripcion"));
+                }
+
+                // Crear la imagen (puede ser null)
+                ImagenMascota imagen = null;
+                if (rs.getObject("imagenid") != null && rs.getInt("imagenid") > 0) {
+                    imagen = new ImagenMascota();
+                    imagen.setImagenID(rs.getInt("imagenid"));
+                    imagen.setR_Mascota(rs.getInt("mascotaid"));
+                    imagen.setURL_Imagen(rs.getString("url_imagen"));
+                    //imagen.setEsPrincipal(true); // Asumimos que es principal si se obtuvo
+                }
+
+                // Crear el objeto completo
+                reporteCompleto = new ReporteConRelaciones(reporte, mascota, usuario, especie, imagen);
+
+                System.out.println("DEBUG DAO: ReporteConRelaciones creado exitosamente para reporte ID = " + reporteId);
+                System.out.println("DEBUG DAO: Mascota = " + mascota.getNombre() + ", Usuario = " + usuario.getNombre());
+
+            } else {
+                System.out.println("DEBUG DAO: No se encontró reporte con ID = " + reporteId);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR DAO: Exception en obtenerReporteCompleto - " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            cerrarRecursos();
+        }
+
+        return reporteCompleto;
+    }
+
 }
