@@ -128,7 +128,7 @@
                         <p class="mb-0">Únete a nuestra comunidad de amantes de mascotas</p>
                     </div>
                     <div class="register-body">
-                        <form action="${pageContext.request.contextPath}/RegistrarClienteServlet" method="post">
+                        <form action="${pageContext.request.contextPath}/RegistrarClienteServlet" method="post" onsubmit="return handleSubmit(event)">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-floating mb-3">
@@ -189,6 +189,19 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select" id="rol" name="rol" required>
+                                            <option value="">Seleccione un rol</option>
+                                            <option value="Admin">Administrador</option>
+                                            <option value="Cliente">Cliente</option>
+                                        </select>
+                                        <label for="rol"><i class="bi bi-person-badge me-2"></i>Rol</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-register mb-4">
                                 <i class="bi bi-person-plus me-2"></i>Registrarse
                             </button>
@@ -244,6 +257,36 @@
             alertContainer.style.display = 'none';
         }
     });
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '${pageContext.request.contextPath}/Vistas_JSP/Usuarios/listar_usuario.jsp';
+            } else {
+                throw new Error('Error en el registro');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger d-flex align-items-center show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>Error al registrar el usuario</div>
+                </div>
+            `;
+        });
+        
+        return false;
+    }
 </script>
 </body>
 </html> 

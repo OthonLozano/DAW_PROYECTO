@@ -21,7 +21,7 @@
             --background-color: #f8f9fa;
             --text-color: #2c3e50;
         }
-        
+
         body {
             background-color: var(--background-color);
             color: var(--text-color);
@@ -161,11 +161,33 @@
                 <div class="register-card">
                     <div class="register-header">
                         <h2 class="mb-3">
-                            <i class="bi bi-person-plus-fill me-2"></i>Registro de Cliente
+                            <i class="bi bi-person-plus-fill me-2"></i>Registro de Usuario
                         </h2>
-                        <p class="mb-0">Únete a nuestra comunidad de amantes de mascotas</p>
                     </div>
                     <div class="register-body">
+                        <!-- Mensajes de error o éxito -->
+                        <%
+                            String success = request.getParameter("success");
+                            String error = request.getParameter("error");
+
+                            if (success != null && !success.isEmpty()) {
+                        %>
+                        <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <div><%= success %></div>
+                        </div>
+                        <%
+                        } else if (error != null && !error.isEmpty()) {
+                        %>
+                        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <div><%= error %></div>
+                        </div>
+                        <%
+                            }
+                        %>
+
+                        <!-- FORMULARIO CORREGIDO - SIN JAVASCRIPT -->
                         <form action="${pageContext.request.contextPath}/RegistrarClienteServlet" method="post">
                             <div class="row">
                                 <div class="col-md-4">
@@ -227,38 +249,28 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select" id="rol" name="rol" required>
+                                            <option value="">Seleccione un rol</option>
+                                            <option value="Admin">Administrador</option>
+                                            <option value="Cliente">Cliente</option>
+                                        </select>
+                                        <label for="rol"><i class="bi bi-person-badge me-2"></i>Rol</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <a href="${pageContext.request.contextPath}/Vistas_JSP/Usuarios/listar_usuarios.jsp" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> Volver a la Lista
                                 </a>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
                                     <i class="fas fa-save"></i> Guardar Usuario
                                 </button>
                             </div>
                         </form>
-
-                        <!-- Mensajes de error o éxito - Solo se muestran cuando hay un evento -->
-                        <%
-                            String success = request.getParameter("success");
-                            String error = request.getParameter("error");
-
-                            if (success != null && !success.isEmpty()) {
-                        %>
-                        <div class="alert alert-success d-flex align-items-center" role="alert">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            <div><%= success %></div>
-                        </div>
-                        <%
-                        } else if (error != null && !error.isEmpty()) {
-                        %>
-                        <div class="alert alert-danger d-flex align-items-center" role="alert">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <div><%= error %></div>
-                        </div>
-                        <%
-                            }
-                        %>
-
                     </div>
                 </div>
             </div>
@@ -268,5 +280,28 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript opcional para feedback visual -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (form && submitBtn) {
+            form.addEventListener('submit', function() {
+                // Mostrar indicador de carga
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+                submitBtn.disabled = true;
+
+                // Opcional: Re-habilitar después de 10 segundos si algo sale mal
+                setTimeout(function() {
+                    submitBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Usuario';
+                    submitBtn.disabled = false;
+                }, 10000);
+            });
+        }
+    });
+</script>
+
 </body>
 </html>
