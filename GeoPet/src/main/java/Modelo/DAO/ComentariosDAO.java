@@ -13,18 +13,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO para gestionar operaciones CRUD de Comentarios
+ * Clase DAO (Data Access Object) para gestionar operaciones CRUD de Comentarios.
+ * Proporciona métodos para interactuar con la tabla 'comentarios' en la base de datos,
+ * incluyendo operaciones de consulta, inserción, actualización y eliminación lógica.
+ *
+ * Esta clase implementa el patrón DAO para separar la lógica de acceso a datos
+ * de la lógica de negocio, proporcionando una interfaz limpia para las operaciones
+ * relacionadas con comentarios en reportes de mascotas.
+ *
+ * Los comentarios están asociados a reportes específicos y usuarios, permitiendo
+ * la colaboración y comunicación entre usuarios del sistema.
  */
 public class ComentariosDAO {
 
-    // Variables para la conexión
-    Conexion cn = new Conexion();
-    Connection con;
-    PreparedStatement ps;
-    ResultSet rs;
+    /**
+     * Instancia de la clase Conexion para obtener conexiones a la base de datos.
+     */
+    private final Conexion cn = new Conexion();
 
     /**
-     * Método para cerrar recursos de base de datos
+     * Objeto Connection para manejar la conexión activa a la base de datos.
+     */
+    private Connection con;
+
+    /**
+     * Objeto PreparedStatement para ejecutar consultas SQL parametrizadas.
+     */
+    private PreparedStatement ps;
+
+    /**
+     * Objeto ResultSet para manejar los resultados de las consultas SELECT.
+     */
+    private ResultSet rs;
+
+    /**
+     * Método utilitario para cerrar todos los recursos de base de datos de forma segura.
+     * Cierra en orden inverso: ResultSet, PreparedStatement y Connection.
+     *
+     * Este método debe ser llamado en el bloque finally de cada operación
+     * para evitar memory leaks y conexiones abiertas.
      */
     private void cerrarRecursos() {
         try {
@@ -32,16 +59,29 @@ public class ComentariosDAO {
             if (ps != null) ps.close();
             if (con != null) con.close();
         } catch (SQLException e) {
-            System.out.println("ERROR: Al cerrar recursos - " + e.getMessage());
+            System.err.println("ERROR: Al cerrar recursos de base de datos - " + e.getMessage());
         }
     }
 
     /**
-     * Obtiene todos los comentarios de un reporte específico con información del usuario
+     * Obtiene todos los comentarios asociados a un reporte específico con información completa del usuario.
+     * Realiza un JOIN con la tabla usuarios para obtener datos completos del autor del comentario.
+     *
+     * La consulta incluye:
+     * - Información completa del comentario
+     * - Datos del usuario que escribió el comentario
+     *
+     * Solo retorna comentarios con estatus 'Alta' (no eliminados lógicamente).
+     * Los resultados se ordenan por fecha de comentario en orden descendente
+     * para mostrar los comentarios más recientes primero.
+     *
+     * @param reporteId ID del reporte del cual se desean obtener los comentarios
+     * @return List<ComentariosConRelaciones> Lista de comentarios con información del usuario autor
      */
     public List<ComentariosConRelaciones> obtenerComentariosPorReporte(int reporteId) {
         List<ComentariosConRelaciones> comentarios = new ArrayList<>();
 
+        // Consulta SQL con JOIN para obtener información completa del comentario y usuario
         String sql = "SELECT " +
                 "c.comentarioid, c.r_usuario, c.r_reporte, c.contenido, " +
                 "c.fecha_comentario, c.estatus, " +
@@ -52,9 +92,6 @@ public class ComentariosDAO {
                 "WHERE c.r_reporte = ? AND c.estatus = 'Alta' " +
                 "ORDER BY c.fecha_comentario DESC";
 
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Obteniendo comentarios para reporte ID = " + reporteId);
-
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -62,7 +99,7 @@ public class ComentariosDAO {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                // Crear el comentario
+                // Construcción del objeto Comentarios con datos de la consulta
                 Comentarios comentario = new Comentarios();
                 comentario.setComentarioID(rs.getInt("comentarioid"));
                 comentario.setR_Usuario(rs.getInt("r_usuario"));
@@ -71,7 +108,7 @@ public class ComentariosDAO {
                 comentario.setFecha_Comentario(rs.getDate("fecha_comentario"));
                 comentario.setEstatus(rs.getString("estatus"));
 
-                // Crear el usuario
+                // Construcción del objeto Usuario autor del comentario
                 Usuarios usuario = new Usuarios();
                 usuario.setUsuarioID(rs.getInt("usuarioid"));
                 usuario.setNombre(rs.getString("usuario_nombre"));
@@ -80,17 +117,13 @@ public class ComentariosDAO {
                 usuario.setTelefono(rs.getString("telefono"));
                 usuario.setEmail(rs.getString("email"));
 
-                // Crear el objeto con relaciones
+                // Creación del objeto compuesto con las relaciones
                 ComentariosConRelaciones comentarioCompleto = new ComentariosConRelaciones(comentario, usuario);
                 comentarios.add(comentarioCompleto);
-
-                System.out.println("DEBUG DAO: Comentario agregado - Usuario: " + usuario.getNombre());
             }
 
-            System.out.println("DEBUG DAO: Total comentarios obtenidos = " + comentarios.size());
-
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en obtenerComentariosPorReporte - " + e.getMessage());
+            System.err.println("ERROR: Excepción en obtenerComentariosPorReporte - " + e.getMessage());
             e.printStackTrace();
         } finally {
             cerrarRecursos();
@@ -100,15 +133,21 @@ public class ComentariosDAO {
     }
 
     /**
-     * Agregar un nuevo comentario
+     * Inserta un nuevo comentario en la base de datos.
+     *
+     * El método establece automáticamente:
+     * - La fecha del comentario como la fecha actual (CURRENT_DATE)
+     * - El estatus inicial como 'Alta'
+     *
+     * Esta función permite a los usuarios participar en discusiones
+     * sobre reportes específicos, facilitando la comunicación colaborativa.
+     *
+     * @param comentario Objeto Comentarios con los datos a insertar
+     * @return boolean true si la inserción fue exitosa, false en caso contrario
      */
     public boolean agregarComentario(Comentarios comentario) {
         String sql = "INSERT INTO comentarios (r_usuario, r_reporte, contenido, fecha_comentario, estatus) " +
                 "VALUES (?, ?, ?, CURRENT_DATE, 'Alta')";
-
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Agregando comentario - Usuario: " + comentario.getR_Usuario() +
-                ", Reporte: " + comentario.getR_Reporte());
 
         try {
             con = cn.getConnection();
@@ -118,17 +157,10 @@ public class ComentariosDAO {
             ps.setString(3, comentario.getContenido());
 
             int resultado = ps.executeUpdate();
-
-            if (resultado > 0) {
-                System.out.println("DEBUG DAO: Comentario agregado exitosamente");
-                return true;
-            } else {
-                System.out.println("DEBUG DAO: No se pudo agregar el comentario");
-                return false;
-            }
+            return resultado > 0;
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en agregarComentario - " + e.getMessage());
+            System.err.println("ERROR: Excepción en agregarComentario - " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -137,7 +169,16 @@ public class ComentariosDAO {
     }
 
     /**
-     * Obtener un comentario específico por ID
+     * Obtiene un comentario específico por su ID con información completa del usuario autor.
+     * Realiza un JOIN con la tabla usuarios para obtener datos completos del autor.
+     *
+     * Solo retorna el comentario si tiene estatus 'Alta' (no eliminado lógicamente).
+     *
+     * Este método es útil para operaciones de edición, validación de permisos
+     * y visualización detallada de comentarios específicos.
+     *
+     * @param comentarioId ID único del comentario a buscar
+     * @return ComentariosConRelaciones Objeto con el comentario y datos del usuario, null si no se encuentra
      */
     public ComentariosConRelaciones obtenerComentarioPorId(int comentarioId) {
         String sql = "SELECT " +
@@ -149,9 +190,6 @@ public class ComentariosDAO {
                 "INNER JOIN usuarios u ON c.r_usuario = u.usuarioid " +
                 "WHERE c.comentarioid = ? AND c.estatus = 'Alta'";
 
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Buscando comentario con ID = " + comentarioId);
-
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
@@ -159,7 +197,7 @@ public class ComentariosDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                // Crear el comentario
+                // Construcción del objeto Comentarios
                 Comentarios comentario = new Comentarios();
                 comentario.setComentarioID(rs.getInt("comentarioid"));
                 comentario.setR_Usuario(rs.getInt("r_usuario"));
@@ -168,7 +206,7 @@ public class ComentariosDAO {
                 comentario.setFecha_Comentario(rs.getDate("fecha_comentario"));
                 comentario.setEstatus(rs.getString("estatus"));
 
-                // Crear el usuario
+                // Construcción del objeto Usuario
                 Usuarios usuario = new Usuarios();
                 usuario.setUsuarioID(rs.getInt("usuarioid"));
                 usuario.setNombre(rs.getString("usuario_nombre"));
@@ -177,29 +215,36 @@ public class ComentariosDAO {
                 usuario.setTelefono(rs.getString("telefono"));
                 usuario.setEmail(rs.getString("email"));
 
-                System.out.println("DEBUG DAO: Comentario encontrado");
                 return new ComentariosConRelaciones(comentario, usuario);
             }
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en obtenerComentarioPorId - " + e.getMessage());
+            System.err.println("ERROR: Excepción en obtenerComentarioPorId - " + e.getMessage());
             e.printStackTrace();
         } finally {
             cerrarRecursos();
         }
 
-        System.out.println("DEBUG DAO: Comentario no encontrado");
         return null;
     }
 
     /**
-     * Editar un comentario existente
+     * Actualiza el contenido de un comentario existente.
+     *
+     * Solo permite modificar el contenido del comentario, manteniendo
+     * inmutables los demás campos como fecha, autor y reporte asociado.
+     *
+     * La operación solo se realiza si el comentario tiene estatus 'Alta',
+     * evitando modificaciones en comentarios eliminados lógicamente.
+     *
+     * Este método es útil para correcciones o actualizaciones de contenido
+     * por parte del autor original del comentario.
+     *
+     * @param comentario Objeto Comentarios con el contenido actualizado
+     * @return boolean true si la actualización fue exitosa, false en caso contrario
      */
     public boolean editarComentario(Comentarios comentario) {
         String sql = "UPDATE comentarios SET contenido = ? WHERE comentarioid = ? AND estatus = 'Alta'";
-
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Editando comentario ID = " + comentario.getComentarioID());
 
         try {
             con = cn.getConnection();
@@ -208,17 +253,10 @@ public class ComentariosDAO {
             ps.setInt(2, comentario.getComentarioID());
 
             int resultado = ps.executeUpdate();
-
-            if (resultado > 0) {
-                System.out.println("DEBUG DAO: Comentario editado exitosamente");
-                return true;
-            } else {
-                System.out.println("DEBUG DAO: No se pudo editar el comentario");
-                return false;
-            }
+            return resultado > 0;
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en editarComentario - " + e.getMessage());
+            System.err.println("ERROR: Excepción en editarComentario - " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -227,13 +265,20 @@ public class ComentariosDAO {
     }
 
     /**
-     * Eliminar un comentario (cambiar estatus a 'Baja')
+     * Realiza una eliminación lógica de un comentario cambiando su estatus a 'Baja'.
+     *
+     * Esta implementación utiliza eliminación lógica en lugar de eliminación física
+     * para mantener la integridad referencial, preservar el historial de discusiones
+     * y permitir auditorías futuras.
+     *
+     * Los comentarios eliminados lógicamente no aparecerán en las consultas
+     * normales pero permanecen en la base de datos para propósitos de auditoría.
+     *
+     * @param comentarioId ID único del comentario a eliminar
+     * @return boolean true si la eliminación fue exitosa, false en caso contrario
      */
     public boolean eliminarComentario(int comentarioId) {
         String sql = "UPDATE comentarios SET estatus = 'Baja' WHERE comentarioid = ?";
-
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Eliminando comentario ID = " + comentarioId);
 
         try {
             con = cn.getConnection();
@@ -241,17 +286,10 @@ public class ComentariosDAO {
             ps.setInt(1, comentarioId);
 
             int resultado = ps.executeUpdate();
-
-            if (resultado > 0) {
-                System.out.println("DEBUG DAO: Comentario eliminado exitosamente");
-                return true;
-            } else {
-                System.out.println("DEBUG DAO: No se pudo eliminar el comentario");
-                return false;
-            }
+            return resultado > 0;
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en eliminarComentario - " + e.getMessage());
+            System.err.println("ERROR: Excepción en eliminarComentario - " + e.getMessage());
             e.printStackTrace();
             return false;
         } finally {
@@ -260,13 +298,20 @@ public class ComentariosDAO {
     }
 
     /**
-     * Verificar si el usuario es propietario del comentario
+     * Verifica si un usuario específico es el propietario (autor) de un comentario.
+     *
+     * Esta validación es crucial para operaciones de edición y eliminación,
+     * asegurando que solo el usuario que escribió el comentario pueda modificarlo.
+     *
+     * Solo considera comentarios con estatus 'Alta' para evitar validaciones
+     * sobre comentarios ya eliminados lógicamente.
+     *
+     * @param comentarioId ID del comentario a verificar
+     * @param usuarioId ID del usuario cuya propiedad se desea verificar
+     * @return boolean true si el usuario es autor del comentario, false en caso contrario
      */
     public boolean esUsuarioPropietarioComentario(int comentarioId, int usuarioId) {
         String sql = "SELECT COUNT(*) FROM comentarios WHERE comentarioid = ? AND r_usuario = ? AND estatus = 'Alta'";
-
-        System.out.println("=== DEBUG ComentariosDAO ===");
-        System.out.println("DEBUG DAO: Verificando propiedad - Comentario: " + comentarioId + ", Usuario: " + usuarioId);
 
         try {
             con = cn.getConnection();
@@ -276,13 +321,11 @@ public class ComentariosDAO {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                boolean esPropietario = rs.getInt(1) > 0;
-                System.out.println("DEBUG DAO: Es propietario = " + esPropietario);
-                return esPropietario;
+                return rs.getInt(1) > 0;
             }
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en esUsuarioPropietarioComentario - " + e.getMessage());
+            System.err.println("ERROR: Excepción en esUsuarioPropietarioComentario - " + e.getMessage());
             e.printStackTrace();
         } finally {
             cerrarRecursos();
@@ -292,7 +335,17 @@ public class ComentariosDAO {
     }
 
     /**
-     * Contar comentarios de un reporte
+     * Cuenta el número total de comentarios activos asociados a un reporte específico.
+     *
+     * Solo considera comentarios con estatus 'Alta' para proporcionar
+     * un conteo preciso de comentarios válidos y visibles.
+     *
+     * Este método es útil para generar estadísticas de participación,
+     * mostrar contadores en la interfaz de usuario y validaciones
+     * antes de realizar operaciones sobre reportes.
+     *
+     * @param reporteId ID del reporte del cual se desea contar los comentarios
+     * @return int Número de comentarios activos asociados al reporte
      */
     public int contarComentariosPorReporte(int reporteId) {
         String sql = "SELECT COUNT(*) FROM comentarios WHERE r_reporte = ? AND estatus = 'Alta'";
@@ -308,7 +361,7 @@ public class ComentariosDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("ERROR DAO: Exception en contarComentariosPorReporte - " + e.getMessage());
+            System.err.println("ERROR: Excepción en contarComentariosPorReporte - " + e.getMessage());
             e.printStackTrace();
         } finally {
             cerrarRecursos();

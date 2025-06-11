@@ -198,7 +198,7 @@ public class UsuariosServlet extends HttpServlet {
             }
         } else {
             System.out.println("ID no proporcionado para edición");
-            response.sendRedirect(request.getContextPath() + "/UsuariosServlet?accion=listar");
+            response.sendRedirect(request.getContextPath() + "/UsuariosServlet?accion=listarsd");
         }
     }
 

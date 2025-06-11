@@ -2,10 +2,6 @@ package Modelo.JavaBeans;
 
 import java.io.Serializable;
 
-/**
- * Clase para almacenar un avistamiento con sus relaciones
- * Reutiliza los JavaBeans existentes
- */
 public class AvistamientoConRelaciones implements Serializable {
     private static final long serialVersionUID = 1L;
 

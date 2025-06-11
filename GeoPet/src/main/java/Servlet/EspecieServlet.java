@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.util.List;
 import Connection.Conexion;
 
-@WebServlet(urlPatterns = {"/EspecieServlet"})
+@WebServlet(name = "EspecieServlet", urlPatterns = {"/EspecieServlet"})
 public class EspecieServlet extends HttpServlet {
 
     EspecieDAO dao = new EspecieDAO();

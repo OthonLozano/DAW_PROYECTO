@@ -694,7 +694,7 @@
     <a href="ReporteDesaparicionServlet?accion=registrar" class="btn-main">
       <i class="bi bi-plus-circle me-2"></i>Reportar Nueva Mascota Perdida
     </a>
-    <a href="/GeoPet_war_exploded/Vistas_JSP/Usuarios/index.jsp" class="btn-secondary-main">
+    <a href="/GeoPet_war_exploded/Vistas_JSP/Usuarios/HomeCliente.jsp" class="btn-secondary-main">
       <i class="bi bi-house me-2"></i>Ir al Inicio
     </a>
   </div>
